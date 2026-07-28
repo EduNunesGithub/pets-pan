@@ -1,2 +1,11 @@
+.env*
 .next
+.vercel
+*.log
+*.pem
+*.tsbuildinfo
+build
+coverage
+next-env.d.ts
 node_modules
+out
