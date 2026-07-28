@@ -1,0 +1,38 @@
+{
+  "author": "",
+  "dependencies": {
+    "next": "^16.2.12",
+    "react": "^19.2.8",
+    "react-dom": "^19.2.8"
+  },
+  "description": "",
+  "devDependencies": {
+    "@types/node": "26.1.2",
+    "@types/react": "19.2.17",
+    "eslint": "^9.39.5",
+    "eslint-config-next": "^16.2.12",
+    "eslint-config-prettier": "^10.1.8",
+    "husky": "^9.1.7",
+    "lint-staged": "^17.2.0",
+    "prettier": "3.9.6",
+    "typescript": "6.0.3"
+  },
+  "directories": {
+    "doc": "docs"
+  },
+  "license": "ISC",
+  "lint-staged": {
+    "**/*": "prettier --write --ignore-unknown"
+  },
+  "name": "pets-pan",
+  "scripts": {
+    "build": "next build",
+    "dev": "next dev",
+    "lint": "eslint",
+    "lint:fix": "eslint --fix",
+    "start": "next start",
+    "prepare": "husky"
+  },
+  "type": "module",
+  "version": "1.0.0"
+}
