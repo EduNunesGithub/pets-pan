@@ -39,11 +39,12 @@ Código escrito sem passar por ela será rejeitado na revisão.
 
 ## Skills do projeto
 
-| Skill             | Quando                                         |
-| ----------------- | ---------------------------------------------- |
-| `write-code`      | Toda escrita de código. Obrigatória.           |
-| `frontend-design` | Direção visual ao construir ou remodelar UI.   |
-| `commit`          | Criar branch, commitar e subir. Nunca abre PR. |
+| Skill             | Quando                                                                                                                   |
+| ----------------- | ------------------------------------------------------------------------------------------------------------------------ |
+| `write-code`      | Toda escrita de código. Obrigatória.                                                                                     |
+| `nextjs`          | Qualquer coisa que toque o framework. App Router, rotas, Server/Client Components, Server Actions, cache, `next.config`. |
+| `frontend-design` | Direção visual ao construir ou remodelar UI.                                                                             |
+| `commit`          | Criar branch, commitar e subir. Nunca abre PR.                                                                           |
 
 Se for usar uma biblioteca ou framework sem skill correspondente no repositório, **pare e
 pergunte** — peça a instalação da skill ou a documentação da versão em uso. Não escreva API
@@ -74,9 +75,13 @@ contradição.
 App Next.js recém-scaffoldado: só `app/layout.tsx` e `app/page.tsx`. Nada do domínio foi
 implementado ainda.
 
-Pendências de configuração que bloqueiam as convenções:
+Configuração já alinhada às convenções: `strict: true`, `allowJs: false` e alias `@/`
+apontando para a raiz no `tsconfig.json`; `next.config.ts` com `typedRoutes`.
 
-- `tsconfig.json` está com `strict: false` e **sem `paths`** — a skill `write-code` exige
-  imports por alias `@/` e proíbe `any`. Nenhuma das duas é aplicável enquanto isso não for
-  corrigido.
+Pendências:
+
 - Não há setup de teste (Vitest, Playwright).
+- `cacheComponents` está desligado — o app roda no modelo de cache anterior ao PPR. Decisão
+  em aberto.
+- Não há remote `origin` configurado, então o passo de push da skill `commit` não tem
+  destino.
