@@ -169,6 +169,8 @@ export default async function Page() {
 - `fetch` idêntico na mesma árvore é memoizado por requisição.
 - **`fetch` não é cacheado por padrão no Next 16** e bloqueia a renderização até resolver.
 - `React.cache` memoiza uma função por requisição (não entre requisições).
+- Query de banco neste projeto passa pela skill `drizzle` — o `db` só é importável em Server
+  Component, Server Action ou route handler.
 
 ### Streaming
 
@@ -293,8 +295,9 @@ import { revalidatePath, revalidateTag } from "next/cache";
 
 O Next 16 tem **dois modelos**. Qual vale depende de `cacheComponents` no `next.config.ts`.
 
-**Este projeto ainda não tem `next.config.ts`** — logo, roda no modelo anterior. Antes de
-escrever qualquer coisa de cache, confirme o estado do arquivo.
+**Este projeto tem `next.config.ts`, mas sem `cacheComponents`** — logo, roda no modelo
+anterior ao PPR. Ligar ou não é decisão em aberto. Antes de escrever qualquer coisa de cache,
+confirme o estado do arquivo.
 
 ### Com `cacheComponents: true` (Cache Components / PPR)
 
@@ -341,6 +344,9 @@ const nextConfig: NextConfig = {
 export default nextConfig;
 ```
 
+Esse é o conteúdo atual do arquivo no repositório: só `typedRoutes`. Não presuma outra opção
+ligada.
+
 Opções relevantes: `typedRoutes` (tipa `href` de `next/link` e os métodos de
 `next/navigation`), `cacheComponents`, `experimental.typedEnv`, `typescript.tsconfigPath`.
 
@@ -348,7 +354,7 @@ Opções relevantes: `typedRoutes` (tipa `href` de `next/link` e os métodos de
 
 ### `tsconfig.json`
 
-- `include` precisa conter `next-env.d.ts` e `.next/types/**/*.ts`.
+- `include` precisa conter `next-env.d.ts`, `.next/types/**/*.ts` e `.next/dev/types/**/*.ts`.
 - `paths` define o alias `@/` que a `write-code` exige.
 - `strict: true` é pré-requisito para a proibição de `any`.
 - Nunca edite `next-env.d.ts` — é gerado. A documentação manda **não versioná-lo**.
@@ -415,7 +421,8 @@ Quando este arquivo não cobrir, busque a URL antes de escrever. Prefixo:
 
 ## Pare e pergunte
 
-- A tarefa pede uma biblioteca de terceiros sem skill no repositório (ORM, auth, UI kit).
+- A tarefa pede uma biblioteca de terceiros sem skill no repositório (auth, UI kit, e-mail).
+  ORM já tem skill: use a `drizzle`.
 - A API necessária não está aqui e a página de documentação não confirma o comportamento na
   versão 16.2.12.
 - A solução exigiria `typescript.ignoreBuildErrors`, `eslint` desabilitado ou `any`.
