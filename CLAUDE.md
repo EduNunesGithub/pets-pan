@@ -73,17 +73,20 @@ contradição.
 
 ## Estado atual
 
-App Next.js recém-scaffoldado: só `app/layout.tsx` e `app/page.tsx`. Nada do domínio foi
-implementado ainda.
+App Next.js recém-scaffoldado. **Nada do domínio foi implementado ainda** — nenhuma das
+entidades de `docs/domain.md` existe em código.
 
 Configuração já alinhada às convenções: `strict: true`, `allowJs: false` e alias `@/`
 apontando para a raiz no `tsconfig.json`; `next.config.ts` com `typedRoutes`.
+
+O banco está conectado: `db/index.ts` (driver `neon-serverless`), `db/relations.ts`,
+`drizzle.config.ts` e migrações versionadas em `drizzle/`. Os scripts são `db:generate`,
+`db:migrate` e `db:studio`.
 
 Pendências:
 
 - Não há setup de teste (Vitest, Playwright).
 - `cacheComponents` está desligado — o app roda no modelo de cache anterior ao PPR. Decisão
   em aberto.
-- Nada do banco foi implementado: não há `db/`, `drizzle.config.ts` nem migração. A skill
-  `drizzle` fixa as decisões (Drizzle v1 `@rc`, driver `neon-serverless`, `generate` +
-  `migrate`), mas nenhuma linha existe ainda.
+- A tabela `todos` e a listagem em `app/page.tsx` são **andaime de verificação da conexão**,
+  não domínio. Saem quando a primeira entidade real (organização, animal) for modelada.

@@ -478,14 +478,19 @@ carregador do próprio Next, que respeita a ordem de precedência
 (`.env.$(NODE_ENV).local` → `.env.local` → `.env.$(NODE_ENV)` → `.env`):
 
 ```bash
-npm i @next/env
+npm i -D @next/env
 ```
+
+A assinatura é `loadEnvConfig(dir, dev?, log?, forceReload?)`, e **`dev` tem default `false`**.
+Com `false` ele carrega a lista de produção (`.env.production.local` → `.env.local` →
+`.env.production` → `.env`) e **ignora o `.env.development.local`** — a `DATABASE_URL` chega
+como `undefined` e o `drizzle-kit` falha com `[x] url: undefined`. Passe o segundo argumento:
 
 ```ts
 import { loadEnvConfig } from "@next/env";
 import { defineConfig } from "drizzle-kit";
 
-loadEnvConfig(process.cwd());
+loadEnvConfig(process.cwd(), process.env.NODE_ENV !== "production");
 
 export default defineConfig({
   dbCredentials: { url: process.env.DATABASE_URL! },
@@ -578,6 +583,12 @@ Demais pontos:
 - Server Action é endpoint `POST` público. **Toda query filtra por `organizationId` do usuário
   autenticado** (regra 1). Escopo de organização é `where`, não decoração de UI.
 - `db.select()` num Server Component `async` funciona direto — não precisa de `fetch`.
+- **Query de banco não torna a rota dinâmica.** Sem `cacheComponents`, o Next pré-renderiza a
+  página no `next build` e roda a query ali — o build precisa da `DATABASE_URL` (e só carrega
+  `.env.local`, não `.env.development.local`) e as linhas ficam congeladas no HTML estático. Se
+  a página deve ler o banco a cada request, declare `export const dynamic = "force-dynamic"` no
+  `page.tsx`. O sintoma é `Error occurred prerendering page` com
+  `No database host or connection string was set` no build, enquanto o `next dev` funciona.
 - `fetch` não é cacheado no Next 16, e query de ORM **nunca** foi. Cache é decisão explícita
   via `revalidateTag` / `'use cache'` — veja a skill `nextjs`.
 - Duas queries independentes no mesmo componente vão em `Promise.all`, não em `await`
@@ -600,6 +611,10 @@ Demais pontos:
 - `drizzle/` no `.gitignore`.
 - Esperar que `defineRelations` crie chave estrangeira: não cria.
 - `dotenv/config` no `drizzle.config.ts` não lê `.env.development.local`.
+- `loadEnvConfig(process.cwd())` sem o segundo argumento também não lê — `dev` default `false`
+  cai na lista de produção.
+- Server Component que só faz query e não declara `force-dynamic`: vira página estática com
+  dado de build.
 - `getTableColumns` renomeado para `getColumns` na v1.
 - Pacotes de validação: use `drizzle-orm/zod`, não `drizzle-zod` (consolidados na v1).
 
