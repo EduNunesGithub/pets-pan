@@ -42,6 +42,7 @@ Código escrito sem passar por ela será rejeitado na revisão.
 | Skill             | Quando                                                                                                                   |
 | ----------------- | ------------------------------------------------------------------------------------------------------------------------ |
 | `write-code`      | Toda escrita de código. Obrigatória.                                                                                     |
+| `drizzle`         | Qualquer coisa que toque o banco. Schema, coluna, relação, query, transação, migração, `drizzle.config`, conexão Neon.   |
 | `nextjs`          | Qualquer coisa que toque o framework. App Router, rotas, Server/Client Components, Server Actions, cache, `next.config`. |
 | `frontend-design` | Direção visual ao construir ou remodelar UI.                                                                             |
 | `commit`          | Criar branch, commitar e subir. Nunca abre PR.                                                                           |
@@ -83,5 +84,6 @@ Pendências:
 - Não há setup de teste (Vitest, Playwright).
 - `cacheComponents` está desligado — o app roda no modelo de cache anterior ao PPR. Decisão
   em aberto.
-- Não há remote `origin` configurado, então o passo de push da skill `commit` não tem
-  destino.
+- Nada do banco foi implementado: não há `db/`, `drizzle.config.ts` nem migração. A skill
+  `drizzle` fixa as decisões (Drizzle v1 `@rc`, driver `neon-serverless`, `generate` +
+  `migrate`), mas nenhuma linha existe ainda.
