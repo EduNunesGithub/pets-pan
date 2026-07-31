@@ -295,9 +295,15 @@ import { revalidatePath, revalidateTag } from "next/cache";
 
 O Next 16 tem **dois modelos**. Qual vale depende de `cacheComponents` no `next.config.ts`.
 
-**Este projeto tem `next.config.ts`, mas sem `cacheComponents`** — logo, roda no modelo
-anterior ao PPR. Ligar ou não é decisão em aberto. Antes de escrever qualquer coisa de cache,
-confirme o estado do arquivo.
+**Este projeto roda com `cacheComponents: true`** (Cache Components / PPR, decidido na
+CAR-119). Nada é cacheado sem `'use cache'` e **não se usa `export const dynamic` nem
+`force-dynamic`**. O render é prerenderizado por padrão; uma leitura de dado runtime só vira
+**buraco dinâmico** quando fica sob um `<Suspense>` **e** alcança uma API dinâmica — `cookies`,
+`headers`, `searchParams`, ou `await connection()` (de `next/server`). Sem esse sinal, o build
+tenta prerenderizar e **executa** o read — um read de banco sem request quebra aí. Página
+autenticada lê `cookies`, então já é dinâmica; um read de banco cru precisa de `connection()`.
+O `<Suspense>` costuma vir do `loading.tsx` do segmento. O marketplace público cacheia com
+`'use cache'` + `cacheTag`/`updateTag`.
 
 ### Com `cacheComponents: true` (Cache Components / PPR)
 
@@ -318,12 +324,32 @@ export default nextConfig;
   `generateStaticParams`) **precisa** estar dentro de `<Suspense>`.
 - Operação não determinística (`Math.random`, `Date.now`, `crypto.randomUUID`) precisa de
   `await connection()` antes, ou de estar dentro de `'use cache'`.
+- Read de banco (ou I/O) **sem** request — sem `cookies`/`headers`/`searchParams` — não é
+  dinâmico sozinho: fica sob `<Suspense>` e chama `await connection()` antes, senão o
+  prerender executa a query no build.
 - Se algo não cacheado ficar fora de `<Suspense>`, o build falha com
   `Uncached data was accessed outside of <Suspense>`.
 
+Padrão de um read runtime sem request (o que o andaime da home usa): `await connection()` sob
+o `<Suspense>` do `loading.tsx`. A rota fica `◐ Partial Prerender` — shell estático + conteúdo
+dinâmico em stream.
+
+```tsx
+import { connection } from "next/server";
+
+import { db } from "@/db";
+
+export default async function Page() {
+  await connection();
+
+  const todos = await db.query.todos.findMany();
+  return <TodoList todos={todos} />;
+}
+```
+
 ### Sem `cacheComponents`
 
-Modelo anterior — veja
+**Não é o modelo deste projeto** (ver acima) — fica só como referência do modelo anterior:
 `/docs/app/guides/caching-without-cache-components`. Não misture as duas APIs.
 
 ---
@@ -338,14 +364,14 @@ Modelo anterior — veja
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  cacheComponents: true,
   typedRoutes: true,
 };
 
 export default nextConfig;
 ```
 
-Esse é o conteúdo atual do arquivo no repositório: só `typedRoutes`. Não presuma outra opção
-ligada.
+Esse é o conteúdo atual do arquivo no repositório: `cacheComponents` (CAR-119) e `typedRoutes`.
 
 Opções relevantes: `typedRoutes` (tipa `href` de `next/link` e os métodos de
 `next/navigation`), `cacheComponents`, `experimental.typedEnv`, `typescript.tsconfigPath`.
