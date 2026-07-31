@@ -4,8 +4,12 @@
 .env*
 .next
 .vercel
+blob-report
 build
 coverage
 next-env.d.ts
 node_modules
 out
+playwright-report
+playwright/.cache
+test-results

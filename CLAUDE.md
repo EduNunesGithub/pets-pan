@@ -98,10 +98,15 @@ O banco está conectado: `db/index.ts` (driver `neon-serverless`), `db/relations
 `drizzle.config.ts` e migrações versionadas em `drizzle/`. Os scripts são `db:generate`,
 `db:migrate` e `db:studio`.
 
+Os testes têm as duas camadas configuradas: **Vitest** para a regra de domínio (`CAR-117`,
+`vitest.config.ts`, specs `*.test.ts`) e **Playwright** para os fluxos de ponta a ponta
+(`CAR-120`, `playwright.config.ts`, specs em `e2e/*.spec.ts`). Rodam por `npm test` e
+`npm run test:e2e` — runners separados que não se cruzam: `.test.ts` é do Vitest, `.spec.ts` é
+do Playwright. O E2E sobe o app sozinho pelo `webServer` (`next dev`) e, por ora, faz smoke
+read-only na base de dev; base dedicada entra quando um fluxo real precisar semear.
+
 Pendências:
 
-- Falta o Playwright para os fluxos de ponta a ponta (`CAR-120`). O Vitest já está
-  configurado (`CAR-117`).
 - A tabela `todos`, a listagem em `app/page.tsx` e o `app/loading.tsx` (que satisfaz o
   `<Suspense>`) são **andaime de verificação da conexão**, não domínio. Saem quando a primeira
   entidade real (organização, animal) for modelada.
