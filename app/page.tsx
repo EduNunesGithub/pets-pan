@@ -1,8 +1,10 @@
+import { connection } from "next/server";
+
 import { db } from "@/db";
 
-export const dynamic = "force-dynamic";
-
 export default async function Page() {
+  await connection();
+
   const todos = await db.query.todos.findMany({
     orderBy: { createdAt: "asc" },
   });

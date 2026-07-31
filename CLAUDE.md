@@ -85,7 +85,14 @@ App Next.js recém-scaffoldado. A camada de domínio já tem casa (`domain/`, ve
 de `docs/domain.md` existe em código.
 
 Configuração já alinhada às convenções: `strict: true`, `allowJs: false` e alias `@/`
-apontando para a raiz no `tsconfig.json`; `next.config.ts` com `typedRoutes`.
+apontando para a raiz no `tsconfig.json`; `next.config.ts` com `typedRoutes` e
+`cacheComponents`.
+
+O modelo de cache é **Cache Components (PPR)** — `cacheComponents: true`, decidido na CAR-119
+com o app ainda sem rotas reais para não pagar migração por rota depois. Nada é cacheado sem
+`'use cache'` e não há `force-dynamic`: uma leitura de dado runtime vira buraco dinâmico
+quando fica sob `<Suspense>` e alcança uma API dinâmica (`cookies`/`headers`/`searchParams`,
+ou `await connection()` num read sem request). O padrão detalhado está na skill `nextjs`.
 
 O banco está conectado: `db/index.ts` (driver `neon-serverless`), `db/relations.ts`,
 `drizzle.config.ts` e migrações versionadas em `drizzle/`. Os scripts são `db:generate`,
@@ -95,7 +102,6 @@ Pendências:
 
 - Falta o Playwright para os fluxos de ponta a ponta (`CAR-120`). O Vitest já está
   configurado (`CAR-117`).
-- `cacheComponents` está desligado — o app roda no modelo de cache anterior ao PPR. Decisão
-  em aberto.
-- A tabela `todos` e a listagem em `app/page.tsx` são **andaime de verificação da conexão**,
-  não domínio. Saem quando a primeira entidade real (organização, animal) for modelada.
+- A tabela `todos`, a listagem em `app/page.tsx` e o `app/loading.tsx` (que satisfaz o
+  `<Suspense>`) são **andaime de verificação da conexão**, não domínio. Saem quando a primeira
+  entidade real (organização, animal) for modelada.
