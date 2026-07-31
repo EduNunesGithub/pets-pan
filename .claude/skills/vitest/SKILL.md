@@ -115,13 +115,13 @@ externos, alfabético dentro do `import`:
 ```ts
 import { describe, expect, it } from "vitest";
 
-import { closeAnimal } from "@/animals/close-animal";
+import { closeAnimal } from "@/domain/animal/close-animal";
 ```
 
 ```ts
 import { describe, expect, it } from "vitest";
 
-import { closeAnimal } from "@/animals/close-animal";
+import { closeAnimal } from "@/domain/animal/close-animal";
 
 describe("closeAnimal", () => {
   it("fecha o animal com um motivo válido (regra 6)", () => {
@@ -191,7 +191,7 @@ it.each([
 Ao lado do módulo, mesmo nome + `.test.ts`, em `kebab-case` (`write-code` §3/§4):
 
 ```
-animals/
+domain/animal/
 ├─ close-animal.ts
 └─ close-animal.test.ts
 ```
@@ -215,7 +215,7 @@ Scripts (inseridos em ordem alfabética no `package.json`):
 `test` usa `vitest run` para fechar em menos de um segundo e nunca travar em CI. `test:watch`
 é o modo de desenvolvimento. Alvo de `CAR-117`: `npm test` verde em < 1s.
 
-- Um arquivo: `npx vitest run animals/close-animal.test.ts`.
+- Um arquivo: `npx vitest run domain/animal/close-animal.test.ts`.
 - Por nome: `npx vitest run -t "regra 6"`.
 - No `lint-staged`, use `vitest related --run` — o `--run` garante que o processo termina em
   vez de abrir watch no commit.

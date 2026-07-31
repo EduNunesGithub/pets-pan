@@ -27,6 +27,13 @@ O motivo é testabilidade: regra de negócio em módulo puro se testa com Vitest
 milissegundos, sem servidor e sem mock de framework. Regra de negócio dentro de Server Action
 não se testa isoladamente.
 
+Essa camada vive em **`domain/`**, na raiz, organizada **por entidade**: um módulo por
+conceito do domínio (`adopter`, `animal`, `application`, `case`, `member`, `organization`),
+mais o motor genérico em `pipeline/`. Cada módulo é uma pasta em `kebab-case`, no singular, e
+**nada dentro de `domain/` importa `next` ou `react`**. O import é sempre por
+`@/domain/<entidade>/...`, com testes co-locados. A convenção completa — o que vai em cada
+módulo e onde mora uma operação que cruza entidades — está em `domain/README.md`.
+
 ## Regra inegociável
 
 **Antes de escrever, editar ou refatorar qualquer arquivo de código, invoque a skill
@@ -73,8 +80,9 @@ contradição.
 
 ## Estado atual
 
-App Next.js recém-scaffoldado. **Nada do domínio foi implementado ainda** — nenhuma das
-entidades de `docs/domain.md` existe em código.
+App Next.js recém-scaffoldado. A camada de domínio já tem casa (`domain/`, ver
+`domain/README.md`), mas **nenhuma entidade foi implementada ainda** — nenhuma das entidades
+de `docs/domain.md` existe em código.
 
 Configuração já alinhada às convenções: `strict: true`, `allowJs: false` e alias `@/`
 apontando para a raiz no `tsconfig.json`; `next.config.ts` com `typedRoutes`.
@@ -85,7 +93,8 @@ O banco está conectado: `db/index.ts` (driver `neon-serverless`), `db/relations
 
 Pendências:
 
-- Não há setup de teste (Vitest, Playwright).
+- Falta o Playwright para os fluxos de ponta a ponta (`CAR-120`). O Vitest já está
+  configurado (`CAR-117`).
 - `cacheComponents` está desligado — o app roda no modelo de cache anterior ao PPR. Decisão
   em aberto.
 - A tabela `todos` e a listagem em `app/page.tsx` são **andaime de verificação da conexão**,
