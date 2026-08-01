@@ -248,6 +248,45 @@ Uma mesma pessoa pode ser as duas coisas (um voluntário que adota um animal de 
 deliberadamente menos flexível: reduz superfície de teste, elimina uma tela inteira de
 configuração e evita que uma ONG se tranque para fora do próprio workspace.
 
+### 8.1 Papéis de membro
+
+Dois papéis, e só dois:
+
+- **Admin** — governa o workspace. Faz tudo que o voluntário faz e, além disso, gerencia
+  membros (convida, remove, muda papel), configura a organização e configura os pipelines e
+  os tipos de case.
+- **Voluntário** — opera. Cadastra e edita animais e suas fotos, controla a publicação no
+  marketplace, fecha e arquiva animais, abre, encerra e cancela cases, move cards no Kanban,
+  conclui e reabre tarefas, tria candidaturas e seleciona a que abre o case de adoção. Não
+  toca em membros nem em nenhuma configuração.
+
+A linha que separa os dois é **governar o workspace × operá-lo**. Toda ação de configuração —
+membros, dados da organização, definição de pipelines e tipos de case — é do Admin; toda a
+operação do dia a dia é dos dois.
+
+| Ação                                               | Admin | Voluntário |
+| -------------------------------------------------- | ----- | ---------- |
+| Gerenciar membros (convidar, remover, mudar papel) | sim   | não        |
+| Configurar a organização                           | sim   | não        |
+| Configurar pipelines e tipos de case               | sim   | não        |
+| Cadastrar e editar animal e fotos                  | sim   | sim        |
+| Publicar e despublicar no marketplace              | sim   | sim        |
+| Fechar, arquivar e reverter arquivamento           | sim   | sim        |
+| Abrir, encerrar e cancelar case                    | sim   | sim        |
+| Mover case no Kanban (avançar/retroceder etapa)    | sim   | sim        |
+| Concluir e reabrir tarefas                         | sim   | sim        |
+| Triar e selecionar candidatura                     | sim   | sim        |
+| Ver dados internos                                 | sim   | sim        |
+
+> **Decisão.** Dois papéis, não mais. Papéis intermediários — um coordenador que configura
+> fluxos mas não gerencia membros, um observador só-leitura — multiplicam a matriz de
+> permissões e a superfície de teste sem resolver uma necessidade do MVP. Entram se e quando
+> um caso real pedir: adicionar flexibilidade depois é barato, tirar é caro.
+
+**Criação e trava de acesso.** O criador da organização nasce Admin. Uma organização tem
+sempre ao menos um Admin — o sistema recusa remover ou rebaixar o último. É o que impede uma
+ONG de se trancar para fora do próprio workspace.
+
 ---
 
 ## 9. Notificações
@@ -302,7 +341,6 @@ notificações.
 
 ## 12. Em aberto
 
-- Conjunto concreto de papéis de membro e o que cada um pode fazer.
 - Valor default de `N` dias para arquivamento.
 - Campos exatos da face pública do animal.
 - Conteúdo dos pipelines pré-definidos que uma organização recebe ao nascer.
