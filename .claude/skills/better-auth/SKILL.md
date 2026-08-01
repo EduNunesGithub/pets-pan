@@ -5,9 +5,9 @@ description: Referência do Better Auth v1.6 (autenticação) usada neste projet
 
 # Better Auth — autenticação
 
-Versões de referência: **`better-auth@1.6.25`**, **`@better-auth/drizzle-adapter@1.6.25`**,
-CLI **`auth@1.6.25`** (invocada por `npx auth@latest`). Documentação e registro npm consultados
-em 2026-08-01.
+Versões de referência: **`better-auth@1.6.25`**, CLI **`auth@1.6.25`** (invocada por
+`npx auth@latest`). Documentação, registro npm e um spike de instalação real consultados em
+2026-08-01.
 
 Escolhido na **CAR-122** para as duas populações de `docs/domain.md` §8 — **membros** escopados
 a um workspace (papel fixo em código, §8.1) e **adotantes** globais. O motivo: a identidade fica
@@ -15,47 +15,53 @@ no **nosso Neon via Drizzle** (fonte única, sem provedor externo a sincronizar)
 `organization` modela workspace, membros, papéis e convites sobre o mesmo banco.
 
 Se algo aqui não cobrir sua dúvida, **não escreva de memória** — busque a página no
-[mapa de documentação](#mapa-de-documentação) e leia antes. A API do Better Auth mudou de casa
-entre versões: o adapter Drizzle virou **pacote separado** e a CLI virou o pacote **`auth`**.
-Exemplo de tutorial antigo erra o import.
+[mapa de documentação](#mapa-de-documentação) e leia antes. O adapter Drizzle vive **no core**,
+em `better-auth/adapters/drizzle` (confirmado nos `exports` do pacote); existe um pacote separado
+`@better-auth/drizzle-adapter`, mas ele declara um peer `drizzle-orm` rígido e **não é usado
+aqui**. A CLI é o pacote **`auth`** (`npx auth@latest`); o antigo `@better-auth/cli` parou na
+`1.4.21`.
 
 ---
 
-## ⚠️ Conflito de versão com o Drizzle deste projeto
+## ⚠️ Conflito de versão com o Drizzle — medido em spike (CAR-122)
 
-`@better-auth/drizzle-adapter@1.6.25` declara **peer `drizzle-orm@^0.45.2`** (linha v0). Este
-projeto roda **`drizzle-orm@1.0.0-rc.4`** (v1 RC — ver skill `drizzle`). `^0.45.2` significa
-`>=0.45.2 <0.46.0` e **não** satisfaz `1.0.0-rc.4`. Consequências:
+Um spike de instalação real (2026-08-01) mediu o conflito. **Não é bloqueio duro** — o adapter
+roda no `drizzle-orm@1.0.0-rc.4` (v1 RC) deste projeto. Três atritos, todos pequenos:
 
-- `npm install @better-auth/drizzle-adapter` cai em `ERESOLVE`.
-- O schema que `npx auth@latest generate` produz sai em **sintaxe Drizzle v0** (API de relações
-  e casing antigos), que a skill `drizzle` proíbe.
+1. **`npm i better-auth` cai em `ERESOLVE`.** O core `better-auth` declara os peers de banco como
+   **opcionais** (`peerDependenciesMeta.optional`), mas o npm ainda valida a versão dos que estão
+   presentes. O gatilho **não** é o `drizzle-orm@^0.45.2` (esse é opcional e silencioso) — é o
+   **`drizzle-kit@>=0.31.4`**: o nosso `1.0.0-rc.4` é **pré-lançamento**, e o semver exclui
+   pré-lançamentos de ranges que não os mencionam, então o npm acha que não satisfaz. **Saída:**
+   `npm i better-auth --legacy-peer-deps`. Não persiste — um `npm ci` limpo reestoura o erro;
+   para durar, `legacy-peer-deps=true` num `.npmrc` (relaxa peers no projeto todo) ou esperar o
+   better-auth subir o range do drizzle v1.
 
-Isto **não** bloqueia a CAR-122 (decisão + skill, sem instalar nada). É o primeiro obstáculo de
-**CAR-126** (modelar `members`) e do login. Antes de instalar, **pare e pergunte**. Saídas
-possíveis, a decidir com o dono do projeto:
+2. **A CLI `generate` não carrega `server-only`.** A doc oficial manda manter fora do grafo de
+   import da CLI o que não resolve fora do bundler — e `server-only` é alias interno do Next.
+   **Resolvido** mantendo `auth/index.ts` e `db/index.ts` pelados (sem `server-only`); o tripwire
+   vive em `server.ts` na raiz, que reexporta `db`/`auth` (ver §1 e skill `drizzle`). Assim a CLI
+   lê o config real (`--config auth/index.ts`) sem tropeçar.
 
-1. Usar o **adapter Kysely** embutido do Better Auth contra o mesmo Postgres do Neon — não
-   depende de `drizzle-orm`, mas passa a existir um segundo caminho de acesso ao banco além do
-   `db/`.
-2. Fixar `@better-auth/drizzle-adapter` numa versão que aceite a linha v1, se existir.
-3. Aceitar `--legacy-peer-deps` **somente** se o adapter provar rodar em runtime na v1, com
-   teste — e reescrever o schema gerado nas convenções v1.
+3. **O bloco `relations()` gerado sai na API v0.** As **tabelas** geradas são v1-compatíveis (o
+   drizzle-kit v1 gera a migração sem erro), mas a CLI emite também `export const xRelations =
+relations(...)`, e a v1 **não exporta mais** `relations` (só `defineRelations`) — isso estoura
+   `relations is not a function` no `db:generate`. Tratamento na §5.
 
-Não resolva de memória qual caminho seguir.
+Nada disso bloqueia mais nada; é workflow, documentado na §5.
 
 ---
 
 ## 1. Instalação e layout de arquivos
 
-**Não instale nada na CAR-122.** Quando o login for implementado (CAR-126 em diante), e depois
-de resolver o conflito acima:
-
 ```bash
-npm i better-auth
+npm i better-auth --legacy-peer-deps
 ```
 
-O adapter, o segredo e o schema entram junto — ver §5 e o alerta acima.
+O adapter está no core (`better-auth/adapters/drizzle`) — **não** instale
+`@better-auth/drizzle-adapter`. O `--legacy-peer-deps` é pelo peer opcional `drizzle-kit` (ver
+alerta acima); para durar num `npm ci`, ponha `legacy-peer-deps=true` no `.npmrc`. O segredo e o
+schema entram junto — ver §2 e §5.
 
 O alias `@/` aponta para a raiz. Espelhando o `db/` da skill `drizzle`, o auth mora em `auth/`
 na raiz:
@@ -68,15 +74,17 @@ na raiz:
  │        └ 📂 [...all]
  │           └ 📜 route.ts     // handler HTTP (§4)
  ├ 📂 auth
- │  ├ 📜 index.ts              // instância server (server-only)
+ │  ├ 📜 index.ts              // instância server, PELADA (sem server-only)
  │  └ 📜 client.ts            // client de browser
  ├ 📂 db
- │  └ 📂 schema                // tabelas geradas do auth entram aqui (§5)
+ │  └ 📂 schema                // schema do auth entra aqui, reescrito (§5)
+ ├ 📜 server.ts                // import "server-only" + reexporta auth e db (guard)
  └ 📜 .env.development.local   // BETTER_AUTH_SECRET, BETTER_AUTH_URL (nomes; ver §2)
 ```
 
-- `auth/index.ts` — a instância `auth`. Segura segredo e o `db`, então **`import "server-only"`
-  na primeira linha**, como em `db/index.ts`. Import por `@/auth`.
+- `auth/index.ts` — a instância `auth`, **sem `server-only`** (a CLI `generate` precisa
+  carregá-la — §5). Import por `@/auth`. O tripwire fica no `server.ts` da raiz, que reexporta
+  `auth` e `db` sob `server-only`; código server-side consome por `@/server` (ver skill `drizzle`).
 - `auth/client.ts` — o `authClient` de browser (`better-auth/react`). Sem segredo. Import por
   `@/auth/client`.
 - `app/api/auth/[...all]/route.ts` — nome fixo do Next (a skill `nextjs` isenta arquivos de
@@ -104,10 +112,8 @@ skill `commit` recusa commit com segredo.
 ## 3. Instância no servidor
 
 ```ts
-import "server-only";
-
-import { drizzleAdapter } from "@better-auth/drizzle-adapter";
 import { betterAuth } from "better-auth";
+import { drizzleAdapter } from "better-auth/adapters/drizzle";
 
 import { db } from "@/db";
 
@@ -191,7 +197,7 @@ confie em botão escondido. Toda leitura ainda filtra por `organizationId` (regr
 **gerar o schema pela CLI e migrar pelo Drizzle Kit**:
 
 ```bash
-npx auth@latest generate --output ./db/schema/auth.ts
+npx auth@latest generate --config auth/index.ts --output ./db/schema/auth.ts --yes
 npm run db:generate
 npm run db:migrate
 ```
@@ -199,12 +205,22 @@ npm run db:migrate
 - `generate` lê `auth/index.ts` e escreve as tabelas do Better Auth num arquivo. Aponte
   `--output` para `db/schema/` para que elas fluam pelo nosso `db:generate` / `db:migrate`
   (skill `drizzle` §8). Flags: `--config`, `--output`, `--yes`.
-- **Um arquivo, várias tabelas.** Isso conflita com a regra "uma tabela por arquivo" da skill
-  `drizzle`. Como é **arquivo gerado** (reescrito a cada mudança de config, como as migrações),
-  trate-o como exceção gerada — não o quebre à mão em vários arquivos, ou o próximo `generate`
-  desfaz o trabalho. Exporte tudo (o `drizzle-kit` só vê o que é exportado).
-- Lembre do conflito de versão: o schema gerado sai em sintaxe v0. Reconciliá-lo com a v1
-  (`snakeCase`, `defineRelations`) é parte de resolver o alerta do topo.
+- **Reescreva o arquivo gerado nas convenções.** A CLI cospe as 7 tabelas num arquivo só, com
+  nomes de coluna explícitos, `timestamp` sem timezone e um bloco `relations()` v0. **Política do
+  projeto:** reescrever à mão para Drizzle v1 (`snakeCase.table`, colunas alfabéticas,
+  `withTimezone: true`, tipos `$inferSelect`/`$inferInsert`) — mantendo intactos os **nomes das
+  tabelas** e as **chaves das colunas** (é por elas que o adapter mapeia). As 7 tabelas ficam
+  juntas em `db/schema/auth.ts` (conjunto coeso da lib). Reexecutar `generate` sobrescreve o
+  arquivo — reaplique a reescrita.
+- **A CLI carrega `auth/index.ts` direto** porque ele e o `@/db` são pelados (sem `server-only` —
+  §1 e skill `drizzle`). A CLI resolve os aliases `@/` do `tsconfig` e não precisa de banco
+  conectado (o `generate` só lê a config).
+- **O bloco `relations()` gerado não entra.** A CLI emite `export const xRelations =
+relations(...)` na API v0, que a v1 não exporta — quebraria o `db:generate`. Na reescrita, as
+  relações do auth vão para `db/relations.ts` via `defineRelations` (o jeito v1), não para o
+  arquivo de schema.
+- **IDs são `text`** (default do Better Auth), não `uuid`. Toda FK do domínio que apontar para
+  `organization`/`user` será `text`.
 
 ### Tabelas base (antes de qualquer plugin)
 
@@ -305,7 +321,9 @@ await authClient.signOut();
 - **`plugins` é a exceção.** A ordem é semântica: `nextCookies()` **por último** (§4). Isso é
   quebra consciente da ordem alfabética e **exige o comentário de justificativa** que a
   `write-code` permite.
-- `auth/index.ts` leva `import "server-only"` no topo, como `db/index.ts`.
+- **Nada de `server-only`** em `auth/index.ts` nem `db/index.ts` (a CLI precisa carregá-los). O
+  guard fica no `server.ts` da raiz, que reexporta `auth`/`db`; consumidores server-side importam
+  de `@/server`.
 - Imports por alias `@/`. Nada de relativo dentro de `auth/`.
 - Zero `any`: o retorno de `getSession` já é tipado; estreite `session?.user` em vez de forçar
   tipo.
@@ -316,17 +334,21 @@ await authClient.signOut();
 
 ## 9. Armadilhas
 
-- Instalar `@better-auth/drizzle-adapter` sem resolver o peer `drizzle-orm@^0.45.2` — `ERESOLVE`
-  contra a v1 RC do projeto (ver topo).
-- Importar o adapter de `better-auth/adapters/drizzle` — esse era o caminho v0; na v1.6 é o
-  pacote `@better-auth/drizzle-adapter`.
+- Instalar o pacote separado `@better-auth/drizzle-adapter` — peer `drizzle-orm` rígido e
+  desnecessário; o adapter está no core (`better-auth/adapters/drizzle`).
+- Instalar `better-auth` sem `--legacy-peer-deps` — `ERESOLVE` pelo peer opcional `drizzle-kit`
+  (pré-lançamento; ver topo).
+- Reintroduzir `server-only` em `auth/index.ts` ou `db/index.ts` — quebra a CLI `generate`
+  (`Cannot find module 'server-only'`); o guard vai em `server.ts` (`@/server`).
+- Deixar o bloco `relations()` gerado no arquivo — quebra o `db:generate` na v1 (ver §5).
 - Usar `@better-auth/cli` (parou na `1.4.21`) em vez do pacote `auth` (`npx auth@latest`).
 - Rodar `npx auth@latest migrate` com Drizzle — só serve ao Kysely embutido; use `db:migrate`.
 - `nextCookies()` fora da última posição do array `plugins` — cookie de sessão não é setado em
   Server Action.
 - Ler a sessão fora de `<Suspense>` com `cacheComponents: true` — quebra o build, ou pior,
   cacheia sessão. `getSession` é dinâmico por causa de `await headers()`.
-- Esquecer `import "server-only"` em `auth/index.ts` — arrasta o segredo para o bundle.
+- Consumir `@/auth` ou `@/db` direto num caminho que chega a Client Component — pula o guard;
+  server-side importa de `@/server`.
 - Habilitar papéis dinâmicos (`organizationRole`) — contradiz §8.1 (papéis fixos no código).
 - Quebrar à mão o arquivo de schema gerado — o próximo `generate` desfaz.
 - `await` esquecido em `headers()` (Promise no Next 16, ver skill `nextjs`).
@@ -355,13 +377,11 @@ Quando este arquivo não cobrir, busque a URL antes de escrever. Prefixo:
 
 ## Pare e pergunte
 
-- **Instalar o adapter Drizzle** sem antes decidir o caminho do conflito `drizzle-orm@^0.45.2`
-  × `1.0.0-rc.4` (ver topo). Este é o bloqueio real de CAR-126/login.
+- **Persistir `legacy-peer-deps`** (`.npmrc`) — relaxa peers no projeto todo; decida com o dono,
+  não de memória (ver topo).
 - A tarefa pede um provedor social, 2FA, magic link ou passkey — plugin não coberto aqui; leia a
   página antes.
-- A modelagem de `organization`/`member` que o plugin gera **conflita** com o que CAR-123/126
-  querem modelar à mão. Quem é dono da definição da tabela é decisão dessas issues, não de
-  memória.
-- A solução pediria papel dinâmico em banco, `any`, `@ts-ignore` ou `--legacy-peer-deps` sem
-  teste que prove o adapter na v1.
+- **Decidido (CAR-123):** o Better Auth é **dono** das tabelas `organization`/`member` — geradas
+  pelo plugin, não modeladas à mão. Campos da ONG (ex.: `location`) entram como `additionalField`.
+- A solução pediria papel dinâmico em banco, `any` ou `@ts-ignore`.
 - A regra de papéis contradiz `docs/domain.md` §8.1 — aponte a contradição, não invente.
