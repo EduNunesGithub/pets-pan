@@ -46,13 +46,14 @@ Código escrito sem passar por ela será rejeitado na revisão.
 
 ## Skills do projeto
 
-| Skill             | Quando                                                                                                                   |
-| ----------------- | ------------------------------------------------------------------------------------------------------------------------ |
-| `write-code`      | Toda escrita de código. Obrigatória.                                                                                     |
-| `drizzle`         | Qualquer coisa que toque o banco. Schema, coluna, relação, query, transação, migração, `drizzle.config`, conexão Neon.   |
-| `nextjs`          | Qualquer coisa que toque o framework. App Router, rotas, Server/Client Components, Server Actions, cache, `next.config`. |
-| `frontend-design` | Direção visual ao construir ou remodelar UI.                                                                             |
-| `commit`          | Criar branch, commitar e subir. Nunca abre PR.                                                                           |
+| Skill             | Quando                                                                                                                     |
+| ----------------- | -------------------------------------------------------------------------------------------------------------------------- |
+| `write-code`      | Toda escrita de código. Obrigatória.                                                                                       |
+| `drizzle`         | Qualquer coisa que toque o banco. Schema, coluna, relação, query, transação, migração, `drizzle.config`, conexão Neon.     |
+| `nextjs`          | Qualquer coisa que toque o framework. App Router, rotas, Server/Client Components, Server Actions, cache, `next.config`.   |
+| `better-auth`     | Qualquer coisa que toque autenticação. Login, sessão, papéis e permissões, membros como identidade, convites, `/api/auth`. |
+| `frontend-design` | Direção visual ao construir ou remodelar UI.                                                                               |
+| `commit`          | Criar branch, commitar e subir. Nunca abre PR.                                                                             |
 
 Se for usar uma biblioteca ou framework sem skill correspondente no repositório, **pare e
 pergunte** — peça a instalação da skill ou a documentação da versão em uso. Não escreva API
@@ -104,6 +105,15 @@ Os testes têm as duas camadas configuradas: **Vitest** para a regra de domínio
 `npm run test:e2e` — runners separados que não se cruzam: `.test.ts` é do Vitest, `.spec.ts` é
 do Playwright. O E2E sobe o app sozinho pelo `webServer` (`next dev`) e, por ora, faz smoke
 read-only na base de dev; base dedicada entra quando um fluxo real precisar semear.
+
+A autenticação está **decidida, não implementada**: a solução é o **Better Auth** (CAR-122),
+escolhida pelas duas populações de `docs/domain.md` §8 — membros escopados ao workspace e
+adotantes globais — com identidade no próprio Neon via Drizzle e o plugin `organization` para
+workspace, membros e papéis. A skill `better-auth` está no repo. **Atenção:** o
+`@better-auth/drizzle-adapter` declara peer `drizzle-orm@^0.45.2` e o projeto roda a
+`1.0.0-rc.4`; o conflito precisa ser resolvido antes de instalar (CAR-126/login) — a skill
+documenta as saídas. Papéis são fixos em código (§8.1), então usa-se o access control estático,
+nunca a tabela de papéis dinâmicos do plugin.
 
 Pendências:
 
