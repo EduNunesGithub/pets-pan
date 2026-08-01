@@ -72,8 +72,6 @@ A escolha é do motor de pipeline: avançar etapa grava em várias tabelas de um
 serverless, mas **não suporta transação interativa** — não use.
 
 ```ts
-import "server-only";
-
 import { neonConfig, Pool } from "@neondatabase/serverless";
 import { drizzle } from "drizzle-orm/neon-serverless";
 import ws from "ws";
@@ -87,8 +85,20 @@ const pool = new Pool({ connectionString: process.env.DATABASE_URL });
 export const db = drizzle({ client: pool, relations });
 ```
 
-`server-only` no topo é obrigatório: sem ele, um import acidental num Client Component
-arrasta a `DATABASE_URL` para o bundle.
+`db/index.ts` fica **sem `server-only`**: ele precisa carregar fora do bundler do Next — a CLI
+do Better Auth lê o config de auth, que importa `@/db` (ver skill `better-auth`). O tripwire
+mora num módulo dedicado, `server.ts` na raiz, que reexporta `db` (e `auth`) sob `server-only`:
+
+```ts
+import "server-only";
+
+export { auth } from "@/auth";
+export { db } from "@/db";
+```
+
+Código server-side que consome o banco (Server Action, componente que faz query) importa
+`{ db }` de **`@/server`**, não de `@/db` — é o `@/server` que quebra o build se cair num Client
+Component e arrasta a `DATABASE_URL` para o bundle. Importar `@/db` direto pula o tripwire.
 
 A forma curta `drizzle(process.env.DATABASE_URL!)` também existe e cria o pool internamente,
 mas aqui o `Pool` é explícito porque o `neonConfig.webSocketConstructor` precisa ser atribuído
@@ -578,8 +588,9 @@ Demais pontos:
 
 ## 10. Uso na camada Next
 
-- `db` só é importado em Server Component, Server Action ou route handler. `server-only` no
-  `db/index.ts` transforma violação em erro de build.
+- `db` é consumido em Server Component, Server Action ou route handler — sempre via `@/server`
+  (que tem o `server-only`), nunca via `@/db` direto. É o `@/server` que transforma um import
+  num Client Component em erro de build.
 - Server Action é endpoint `POST` público. **Toda query filtra por `organizationId` do usuário
   autenticado** (regra 1). Escopo de organização é `where`, não decoração de UI.
 - `db.select()` num Server Component `async` funciona direto — não precisa de `fetch`.
