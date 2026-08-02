@@ -106,8 +106,8 @@ Os testes têm as duas camadas configuradas: **Vitest** para a regra de domínio
 do Playwright. O E2E sobe o app sozinho pelo `webServer` (`next dev`) e, por ora, faz smoke
 read-only na base de dev; base dedicada entra quando um fluxo real precisar semear.
 
-A autenticação usa o **Better Auth** (CAR-122) e já está **modelada e migrada, não plugada ao
-login**: `better-auth@1.6.25` instalado, `auth/index.ts` com o adapter Drizzle do core
+A autenticação usa o **Better Auth** (CAR-122), **modelada, migrada e plugada ao login**
+(CAR-190): `better-auth@1.6.25` instalado, `auth/index.ts` com o adapter Drizzle do core
 (`better-auth/adapters/drizzle`) e o plugin `organization` (com a `location` da ONG como
 `additionalField`). As 7 tabelas — `user`, `session`, `account`, `verification`, `organization`,
 `member`, `invitation`, com `id` `text` — foram geradas pela CLI e **reescritas à mão** nas
@@ -118,12 +118,13 @@ resolvido com `--legacy-peer-deps`. O `server-only` **saiu** de `db/index.ts` e 
 (a CLI precisa carregá-los) e virou o guarded entry `server.ts` na raiz, que reexporta
 `db`/`auth`; código server-side importa de `@/server`. Papéis são fixos em código (§8.1) —
 access control estático, nunca papéis dinâmicos; defini-los em módulo de domínio é a CAR-125.
-Falta o login em si (route handler, sessão, telas). As skills `better-auth` e `drizzle`
+O login por e-mail/senha está ligado (CAR-190): route handler em `app/api/auth/[...all]`,
+`authClient` em `auth/client.ts`, `nextCookies()` como último plugin e o `schema` explícito no
+`drizzleAdapter` — o `db` v1 usa a API de `relations`, que não expõe as tabelas para
+introspecção do adapter. Telas de sign-up/sign-in/sign-out sem estilo e home consciente de
+sessão sob `<Suspense>`; `BETTER_AUTH_SECRET`/`BETTER_AUTH_URL` vêm da Vercel via
+`vercel env pull`. As skills `better-auth` e `drizzle`
 documentam tudo.
 
-Pendências:
-
-- A tabela `todos`, a listagem em `app/page.tsx` e o `app/loading.tsx` (que satisfaz o
-  `<Suspense>`) são **andaime de verificação da conexão**, não domínio. A primeira entidade real
-  já foi modelada (`organization`/`member` via Better Auth), então a remoção do andaime está
-  desbloqueada (CAR-124).
+O andaime de verificação da conexão (tabela `todos`, listagem da home e `app/loading.tsx`) foi
+removido (CAR-124): a home agora é a UI de sessão real.
