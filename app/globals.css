@@ -1,0 +1,44 @@
+@import "tailwindcss";
+
+@theme {
+  --color-card: #fbf9f3;
+  --color-danger: #9e3b2e;
+  --color-honey: #d99a4e;
+  --color-ink: #23201b;
+  --color-line: #ded8c9;
+  --color-muted: #574f3f;
+  --color-paper: #f5f1e8;
+  --color-pine: #2f5d50;
+  --color-pine-strong: #264b40;
+  --color-status-active: #2f5d50;
+  --color-status-archived: #9a9384;
+  --color-status-closed: #5a5a63;
+
+  --font-mono:
+    var(--font-ibm-plex-mono), ui-monospace, "SFMono-Regular", monospace;
+  --font-sans: var(--font-ibm-plex-sans), ui-sans-serif, system-ui, sans-serif;
+
+  --shadow-card: 0 18px 40px -24px rgba(35, 32, 27, 0.35);
+  --shadow-field-focus: inset 0 -1px 0 var(--color-pine);
+
+  /* ordem por tamanho, não alfabética */
+  --spacing-pair: 0.25rem;
+  --spacing-snug: 0.5rem;
+  --spacing-inset: 0.75rem;
+  --spacing-item: 1rem;
+  --spacing-section: 1.25rem;
+  --spacing-block: 1.5rem;
+  --spacing-wide: 2rem;
+  --spacing-control: 2.25rem;
+  --spacing-frame: 4rem;
+}
+
+@layer base {
+  body {
+    -webkit-font-smoothing: antialiased;
+    background-color: var(--color-paper);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    position: relative;
+  }
+}
