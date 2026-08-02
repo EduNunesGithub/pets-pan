@@ -52,6 +52,9 @@ Código escrito sem passar por ela será rejeitado na revisão.
 | `drizzle`         | Qualquer coisa que toque o banco. Schema, coluna, relação, query, transação, migração, `drizzle.config`, conexão Neon.     |
 | `nextjs`          | Qualquer coisa que toque o framework. App Router, rotas, Server/Client Components, Server Actions, cache, `next.config`.   |
 | `better-auth`     | Qualquer coisa que toque autenticação. Login, sessão, papéis e permissões, membros como identidade, convites, `/api/auth`. |
+| `zod`             | Qualquer validação. Schema de form, parse de entrada de Server Action/route, `searchParams`, env, invariante de entidade.  |
+| `tanstack-form`   | Qualquer formulário com estado. `useForm`, campos, validação por schema, submit, binding do design system.                 |
+| `base-ui`         | Qualquer primitivo de UI interativo — modal, popover, menu, select, combobox, tooltip, tabs — ou composição por `render`.  |
 | `frontend-design` | Direção visual ao construir ou remodelar UI.                                                                               |
 | `commit`          | Criar branch, commitar e subir. Nunca abre PR.                                                                             |
 
