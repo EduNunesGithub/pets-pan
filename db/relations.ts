@@ -9,7 +9,6 @@ import {
   user,
   verification,
 } from "@/db/schema/auth";
-import { todos } from "@/db/schema/todos";
 
 export const relations = defineRelations(
   {
@@ -18,7 +17,6 @@ export const relations = defineRelations(
     member,
     organization,
     session,
-    todos,
     user,
     verification,
   },
