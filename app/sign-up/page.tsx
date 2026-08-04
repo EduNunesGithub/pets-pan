@@ -1,13 +1,14 @@
 import { Suspense } from "react";
 
 import { AuthCard } from "@/components/auth-card";
+import { AuthFormSkeleton } from "@/components/auth-form-skeleton";
 import { AuthSwitchLink } from "@/components/auth-switch-link";
 import { SignUpForm } from "@/components/sign-up-form";
 
 export default function Page() {
   return (
     <AuthCard kicker="Cadastro" title="Criar conta">
-      <Suspense fallback={<p className="text-muted text-sm">Carregando…</p>}>
+      <Suspense fallback={<AuthFormSkeleton fields={3} />}>
         <SignUpForm />
 
         <p className="text-muted text-sm">
