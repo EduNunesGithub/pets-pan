@@ -22,6 +22,8 @@ export async function SessionStatus() {
         Autenticado como {session.user.name} ({session.user.email}).
       </p>
 
+      <Link href="/organizations/new">Criar organização</Link>
+
       <SignOutButton />
     </section>
   );
