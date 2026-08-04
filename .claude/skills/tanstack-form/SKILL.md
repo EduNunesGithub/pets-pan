@@ -256,26 +256,36 @@ o mesmo schema Zod**.
 ## 7. Nossos formulários de auth (Better Auth)
 
 Sign-in/sign-up **não** são Server Action — chamam o `authClient` (skill `better-auth`). Então
-são **client-only**: `useForm` + validação Zod, e no `onSubmit` a chamada ao Better Auth.
+são **client-only**: `useForm` + validação Zod. A **mutação** (a chamada ao Better Auth) é dona do
+`isPending` e do `error` via **`useMutation`** (skill `tanstack-react-query`); o `onSubmit` do form
+só dispara a mutação. O par `useState`/`setSubmitError` **saiu** — o erro é `mutation.error`.
 
 ```tsx
-const form = useForm({
-  defaultValues: { email: "", password: "" },
-  onSubmit: async ({ value }) => {
+const mutation = useMutation({
+  mutationFn: async (value: SignInValue) => {
     const { error } = await authClient.signIn.email(value);
     if (error) {
-      setSubmitError(error.message ?? "Não foi possível entrar.");
-      return;
+      throw new Error(error.message ?? "Não foi possível entrar.");
     }
-    router.push("/");
+  },
+  onSuccess: () => {
+    router.push(redirectTo);
+  },
+});
+
+const form = useForm({
+  defaultValues: { email: "", password: "" },
+  onSubmit: ({ value }) => {
+    mutation.mutate(value);
   },
   validators: { onChange: signInInput },
 });
 ```
 
-A validação de campo passou a ser do Zod-via-TanStack; o erro **de submit** do Better Auth (ex.:
-credencial inválida) fica num aviso de nível de form. **Não** use os helpers de
-`@tanstack/react-form-nextjs` aqui — não há Server Action nesse fluxo.
+A validação de campo é do Zod-via-TanStack (`canSubmit`); o erro **de submit** do Better Auth (ex.:
+credencial inválida) é `mutation.error`, num aviso de nível de form, e o `disabled`/label do botão lê
+`mutation.isPending`. **Não** use os helpers de `@tanstack/react-form-nextjs` aqui — não há Server
+Action nesse fluxo. A fiação completa `useMutation` + form está na skill `tanstack-react-query` §5.
 
 ---
 

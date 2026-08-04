@@ -1,7 +1,7 @@
 "use client";
 
+import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
 import * as z from "zod";
 
 import { authClient } from "@/auth/client";
@@ -13,24 +13,29 @@ const signInInput = z.object({
   password: z.string().min(1, "Informe a senha."),
 });
 
+type SignInValue = z.infer<typeof signInInput>;
+
 export function SignInForm() {
   const router = useRouter();
   const { redirectTo } = useAuthRedirect();
-  const [submitError, setSubmitError] = useState<string | null>(null);
 
-  const form = useAppForm({
-    defaultValues: { email: "", password: "" },
-    onSubmit: async ({ value }) => {
-      setSubmitError(null);
-
+  const mutation = useMutation({
+    mutationFn: async (value: SignInValue) => {
       const { error } = await authClient.signIn.email(value);
 
       if (error) {
-        setSubmitError(error.message ?? "Não foi possível entrar.");
-        return;
+        throw new Error(error.message ?? "Não foi possível entrar.");
       }
-
+    },
+    onSuccess: () => {
       router.push(redirectTo);
+    },
+  });
+
+  const form = useAppForm({
+    defaultValues: { email: "", password: "" },
+    onSubmit: ({ value }) => {
+      mutation.mutate(value);
     },
     validators: { onChange: signInInput },
   });
@@ -61,26 +66,24 @@ export function SignInForm() {
           )}
         </form.AppField>
 
-        {submitError ? (
+        {mutation.error ? (
           <p
             className="bg-danger/6 border border-danger/30 px-inset py-snug rounded-sm text-danger text-sm"
             role="alert"
           >
-            {submitError}
+            {mutation.error.message}
           </p>
         ) : null}
       </div>
 
-      <form.Subscribe
-        selector={(state) => [state.canSubmit, state.isSubmitting]}
-      >
-        {([canSubmit, isSubmitting]) => (
+      <form.Subscribe selector={(state) => state.canSubmit}>
+        {(canSubmit) => (
           <button
             className="bg-pine flex font-medium h-control items-center justify-center px-item rounded-md text-paper text-sm transition-colors w-full disabled:cursor-not-allowed disabled:opacity-60 hover:bg-pine-strong"
-            disabled={!canSubmit || isSubmitting}
+            disabled={!canSubmit || mutation.isPending}
             type="submit"
           >
-            {isSubmitting ? "Entrando…" : "Entrar"}
+            {mutation.isPending ? "Entrando…" : "Entrar"}
           </button>
         )}
       </form.Subscribe>

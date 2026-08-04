@@ -2,6 +2,8 @@ import "@/app/globals.css";
 
 import { IBM_Plex_Mono, IBM_Plex_Sans } from "next/font/google";
 
+import { QueryProvider } from "@/components/query-provider";
+
 const ibmPlexMono = IBM_Plex_Mono({
   subsets: ["latin"],
   variable: "--font-ibm-plex-mono",
@@ -20,7 +22,9 @@ export default function Layout({ children }: LayoutProps<"/">) {
       className={`${ibmPlexMono.variable} ${ibmPlexSans.variable}`}
       lang="pt-BR"
     >
-      <body>{children}</body>
+      <body>
+        <QueryProvider>{children}</QueryProvider>
+      </body>
     </html>
   );
 }

@@ -1,13 +1,14 @@
 import { Suspense } from "react";
 
 import { SessionStatus } from "@/components/session-status";
+import { Skeleton } from "@/components/skeleton";
 
 export default function Page() {
   return (
     <main>
       <h1>pet-monorepo</h1>
 
-      <Suspense fallback={<p>Carregando…</p>}>
+      <Suspense fallback={<Skeleton className="rounded-sm text-base w-56" />}>
         <SessionStatus />
       </Suspense>
     </main>
