@@ -1,7 +1,6 @@
 "use server";
 
 import { headers } from "next/headers";
-import { redirect } from "next/navigation";
 
 import { createOrganization } from "@/domain/organization/create-organization";
 import { auth } from "@/server";
@@ -32,5 +31,5 @@ export async function createOrganizationAction(
     return { error: "Não foi possível criar a organização. Tente outro nome." };
   }
 
-  redirect("/");
+  return undefined;
 }
