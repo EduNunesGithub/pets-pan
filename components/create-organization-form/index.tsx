@@ -2,37 +2,32 @@
 
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import * as z from "zod";
 
-import { authClient } from "@/auth/client";
+import { createOrganizationAction } from "@/app/organizations/new/actions";
 import { useAppForm } from "@/components/app-form";
-import { useAuthRedirect } from "@/hooks/use-auth-redirect";
+import { createOrganizationInput } from "@/domain/organization/organization";
 
-const signInInput = z.object({
-  email: z.email("Informe um e-mail válido."),
-  password: z.string().min(1, "Informe a senha."),
-});
-
-export function SignInForm() {
+export function CreateOrganizationForm() {
   const router = useRouter();
-  const { redirectTo } = useAuthRedirect();
   const [submitError, setSubmitError] = useState<string | null>(null);
 
   const form = useAppForm({
-    defaultValues: { email: "", password: "" },
+    defaultValues: { location: "", name: "" },
     onSubmit: async ({ value }) => {
       setSubmitError(null);
 
-      const { error } = await authClient.signIn.email(value);
+      const result = await createOrganizationAction(value);
 
-      if (error) {
-        setSubmitError(error.message ?? "Não foi possível entrar.");
+      if (result?.unauthenticated) {
+        router.push("/sign-in?redirect=/organizations/new");
         return;
       }
 
-      router.push(redirectTo);
+      if (result?.error) {
+        setSubmitError(result.error);
+      }
     },
-    validators: { onChange: signInInput },
+    validators: { onChange: createOrganizationInput },
   });
 
   return (
@@ -45,19 +40,19 @@ export function SignInForm() {
       }}
     >
       <div className="flex flex-col gap-item">
-        <form.AppField name="email">
+        <form.AppField name="name">
           {(field) => (
-            <field.TextField autoComplete="email" label="E-mail" type="email" />
+            <field.TextField
+              autoComplete="organization"
+              label="Nome"
+              type="text"
+            />
           )}
         </form.AppField>
 
-        <form.AppField name="password">
+        <form.AppField name="location">
           {(field) => (
-            <field.TextField
-              autoComplete="current-password"
-              label="Senha"
-              type="password"
-            />
+            <field.TextField label="Localização (opcional)" type="text" />
           )}
         </form.AppField>
 
@@ -80,7 +75,7 @@ export function SignInForm() {
             disabled={!canSubmit || isSubmitting}
             type="submit"
           >
-            {isSubmitting ? "Entrando…" : "Entrar"}
+            {isSubmitting ? "Criando…" : "Criar organização"}
           </button>
         )}
       </form.Subscribe>

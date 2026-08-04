@@ -6,6 +6,7 @@ import * as z from "zod";
 
 import { authClient } from "@/auth/client";
 import { useAppForm } from "@/components/app-form";
+import { useAuthRedirect } from "@/hooks/use-auth-redirect";
 
 const signUpInput = z.object({
   email: z.email("Informe um e-mail válido."),
@@ -15,6 +16,7 @@ const signUpInput = z.object({
 
 export function SignUpForm() {
   const router = useRouter();
+  const { redirectTo } = useAuthRedirect();
   const [submitError, setSubmitError] = useState<string | null>(null);
 
   const form = useAppForm({
@@ -29,7 +31,7 @@ export function SignUpForm() {
         return;
       }
 
-      router.push("/");
+      router.push(redirectTo);
     },
     validators: { onChange: signUpInput },
   });
