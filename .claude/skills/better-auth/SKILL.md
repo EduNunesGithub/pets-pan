@@ -187,7 +187,10 @@ outro usuário.
 
 Server Action é endpoint `POST` público. Autentique **e** autorize dentro de cada função —
 `getSession` para saber quem é, e a checagem de papel/organização para saber se pode. Nunca
-confie em botão escondido. Toda leitura ainda filtra por `organizationId` (regra 1).
+confie em botão escondido. Leitura da **face interna** é escopada à organização (regra 1) por
+mecanismo próprio — `requireActiveOrganization()` de `@/server` resolve a org ativa e devolve o
+`OrganizationScope` _branded_ que essas leituras exigem (skill `drizzle` §10). Leitura pública
+do marketplace (§7) e do adotante global (§8) **não** passa pelo resolver.
 
 ---
 
@@ -263,6 +266,11 @@ export const authClient = createAuthClient({
 Tabelas adicionadas: `organization`, `member`, `invitation` (e, opcionais, `organizationRole`,
 `team`, `teamMember`). Métodos: `createOrganization`, `inviteMember`, `acceptInvitation`,
 `listMembers`, `removeMember`, `updateMemberRole`, `setActiveOrganization`, `listOrganizations`.
+
+`createOrganization` **já seta a org criada como ativa na sessão** (`activeOrganizationId`), a
+menos que se passe `keepCurrentActiveOrganization: true` — não chame `setActiveOrganization`
+depois de criar, é redundante. O client é `authClient.organization.setActive({ organizationId })`
+(devolve `{ data, error }`); a leitura das orgs do usuário é `auth.api.listOrganizations({ headers })`.
 
 ### Papéis: fixos no código, não no banco (§8.1)
 
