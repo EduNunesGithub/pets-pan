@@ -606,6 +606,65 @@ Demais pontos:
   sequencial.
 - Depois de mutar, `revalidatePath` / `revalidateTag` **antes** do `redirect`.
 
+### Escopo por organização — `requireActiveOrganization`
+
+A organização é a fronteira de dados (regra 1). "Lembrar de filtrar" não é mecanismo: um
+vazamento entre workspaces de ONGs é o pior bug do produto. O padrão fecha isso em duas peças.
+
+**A fonte única do `organizationId`.** `requireActiveOrganization()` (em `@/server`) é o único
+lugar que resolve a organização ativa. Ele lê a sessão, exige que a org ativa esteja **setada
+explicitamente** (nunca infere a partir das memberships) e confirma que o usuário é membro dela
+antes de devolver o escopo:
+
+```ts
+import { db, requireActiveOrganization } from "@/server";
+
+export async function listOrganizationAnimals() {
+  const scope = await requireActiveOrganization();
+
+  return db.query.animals.findMany({ where: { organizationId: scope } });
+}
+```
+
+Sem sessão → `/sign-in`; sem org ativa, ou usuário que não é membro dela → `/organizations` (o
+seletor, que lista as orgs do usuário e cai em `/organizations/new` quando não há nenhuma). A
+reconferência da membership não é zelo: `session`
+**não** tem chave estrangeira para `organization`, então um membro removido carregaria um
+`activeOrganizationId` órfão — o resolver barra isso.
+
+**O escopo é um tipo, não uma convenção.** O retorno é `OrganizationScope`
+(`@/db/organization-scope`), uma `string` _branded_ que **só** o resolver produz. Toda função
+que lê tabela da organização recebe esse escopo e filtra por ele:
+
+```ts
+import type { OrganizationScope } from "@/db/organization-scope";
+
+export function listAnimals(scope: OrganizationScope) {
+  return db.query.animals.findMany({ where: { organizationId: scope } });
+}
+```
+
+Uma `string` crua não é atribuível a `OrganizationScope` — não dá para consultar dado escopado
+sem passar pelo resolver (a não ser por um `as` explícito, que é justamente o que a revisão
+pega). Na revisão, o que salta aos olhos é uma leitura da face interna que **não** recebe
+`OrganizationScope`, ou um `where` que não amarra à organização — direto por `organizationId`,
+ou via o animal dono (abaixo).
+
+**Nem toda tabela tem `organizationId`, nem toda leitura é escopada.** Dois recortes que o
+resolver **não** cobre:
+
+- **Tabela dona-do-animal** (case, etapa, tarefa — regra 3) não carrega `organizationId`: o dono
+  é o animal. Escope pela travessia, não por coluna inexistente —
+  `db.query.cases.findMany({ where: { animal: { organizationId: scope } } })`.
+- **Leitura pública / cross-org** — o marketplace é catálogo único de todas as ONGs (§7) e o
+  adotante é global (§8). Essas leituras **não** passam por `requireActiveOrganization()`:
+  aplicá-lo à vitrine derrubaria o visitante anônimo em `/sign-in` e esconderia os animais das
+  outras organizações. O resolver é para a **face interna**, escopada à org.
+
+Não embrulhe `requireActiveOrganization()` em `try/catch`: o redirect é lançado como exceção
+(`NEXT_REDIRECT`) e um catch cego o engoliria. RLS no Postgres fica fora — app único, pool com
+role de serviço; a decisão pode ser revista se um caso pedir.
+
 ---
 
 ## 11. Armadilhas
@@ -628,6 +687,9 @@ Demais pontos:
   dado de build.
 - `getTableColumns` renomeado para `getColumns` na v1.
 - Pacotes de validação: use `drizzle-orm/zod`, não `drizzle-zod` (consolidados na v1).
+- Leitura de tabela da organização sem `OrganizationScope` — escapa da fronteira (regra 1). O
+  `organizationId` só vem de `requireActiveOrganization` (§10).
+- Embrulhar `requireActiveOrganization` em `try/catch` — engole o `redirect` (`NEXT_REDIRECT`).
 
 ---
 
