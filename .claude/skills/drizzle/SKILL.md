@@ -53,7 +53,7 @@ O alias `@/` deste projeto aponta para a raiz, então o banco mora em `db/` na r
 
 `db/` não é camada de domínio. A regra da arquitetura é que a lógica de domínio não importa
 `next`; ela **pode** depender do repositório de dados. Mas regra de negócio não vai dentro de
-query — as 17 regras de `docs/domain.md` vivem em módulo puro, e o `db/` só persiste.
+query — as 18 regras de `docs/domain.md` vivem em módulo puro, e o `db/` só persiste.
 
 ---
 

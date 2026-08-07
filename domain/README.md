@@ -2,7 +2,7 @@
 
 A lógica de negócio do produto vive aqui, numa camada **sem framework**: nada neste diretório
 importa `next`, `react` ou `react-dom`, e nada abre conexão de banco. É TypeScript puro — o
-motor de pipeline, o ciclo de vida do animal e as 17 regras de `docs/domain.md`.
+motor de pipeline, o ciclo de vida do animal e as 18 regras de `docs/domain.md`.
 
 O motivo é testabilidade: regra de negócio em função pura se testa com Vitest em
 milissegundos, sem servidor e sem mock de framework. A camada Next (`app/`) orquestra e expõe

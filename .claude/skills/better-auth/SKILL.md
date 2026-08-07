@@ -90,7 +90,7 @@ na raiz:
 - `app/api/auth/[...all]/route.ts` — nome fixo do Next (a skill `nextjs` isenta arquivos de
   convenção da regra `nome/index.tsx`).
 
-`auth/` não é camada de domínio: as 17 regras de `docs/domain.md` continuam em módulo puro. O
+`auth/` não é camada de domínio: as 18 regras de `docs/domain.md` continuam em módulo puro. O
 auth só resolve identidade e sessão.
 
 ---

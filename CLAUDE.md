@@ -18,7 +18,7 @@ camada HTTP.
 
 ## Arquitetura
 
-A lógica de domínio — motor de pipeline, ciclo de vida do animal, as 17 regras de negócio —
+A lógica de domínio — motor de pipeline, ciclo de vida do animal, as 18 regras de negócio —
 vive numa camada **sem framework**: zero import de `next`, zero dependência de HTTP ou de
 React. A camada Next (route handlers, Server Actions, Server Components) é fina e só
 orquestra.
@@ -64,7 +64,7 @@ de memória.
 
 ## Domínio
 
-`docs/domain.md` é a fonte de verdade do modelo de domínio e das **17 regras de negócio**
+`docs/domain.md` é a fonte de verdade do modelo de domínio e das **18 regras de negócio**
 numeradas. Leia antes de tocar em qualquer entidade do domínio (organização, animal, case,
 pipeline, candidatura, adotante).
 
