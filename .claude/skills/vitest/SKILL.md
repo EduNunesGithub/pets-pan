@@ -31,7 +31,7 @@ Se algo aqui não cobrir sua dúvida, **não escreva de memória** — busque a 
 ## 1. Papel do Vitest neste projeto
 
 O Vitest cobre **só a camada de domínio** — o motor de pipeline, o ciclo de vida do animal e
-as 17 regras de `docs/domain.md`. É a razão de a arquitetura manter essa lógica em módulo
+as 18 regras de `docs/domain.md`. É a razão de a arquitetura manter essa lógica em módulo
 puro (zero import de `next`, zero React): regra de negócio em função pura se testa em
 milissegundos, sem servidor e sem mock de framework.
 
@@ -289,12 +289,12 @@ começa em `1`; spy de construtor exige `function`/`class` (arrow falha). Confir
 
 ---
 
-## 7. Testar as 17 regras
+## 7. Testar as 18 regras
 
-`docs/domain.md` §10 é a fonte. Cada uma das 17 regras tem issue própria no Linear e ganha
-teste isolado — não enterre uma regra dentro do teste de CRUD.
+`docs/domain.md` §10 é a fonte. Cada regra ganha teste isolado — não enterre uma regra dentro
+do teste de CRUD.
 
-- Regras que são invariante puro (2, 6, 11, 12) → função de domínio + teste direto.
+- Regras que são invariante puro (2, 6, 11, 12, 18) → função de domínio + teste direto.
 - Regras que gravam em várias tabelas numa transação (4, 5, 15) → a **decisão** é pura e
   testável aqui; a persistência é da skill `drizzle`. Teste o que a função decide, não o SQL.
 - Regra 16 tem issue de teste dedicada (`CAR-152`): a instância copia a definição e sobrevive

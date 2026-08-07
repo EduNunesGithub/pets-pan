@@ -27,7 +27,7 @@ Se o escopo estiver ambíguo, revise o que foi apontado e diga no relatório o q
 sugerem. Uma função chamada `archiveAnimal` que apaga registros viola a regra 8
 independentemente do nome.
 
-**4. Confronte com as regras.** Percorra as 17 regras numeradas da §10 do domínio e as
+**4. Confronte com as regras.** Percorra as 18 regras numeradas da §10 do domínio e as
 decisões de modelagem do resto do documento. Para cada divergência, escreva o cenário
 concreto em que o comportamento errado aparece.
 

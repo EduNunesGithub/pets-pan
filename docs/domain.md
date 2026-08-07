@@ -103,19 +103,62 @@ do cadastro.
 
 ### 4.1 Face pública e face interna
 
-O animal tem dois conjuntos de dados:
+O animal tem dois conjuntos de dados. A separação é de **modelagem**, não de interface:
+nenhum dado interno trafega para o marketplace, e a face pública é um subconjunto **fechado
+e explícito**. A lista abaixo é o contrato dos campos e tipos da face pública, para o schema
+de `animals` e para as consultas do marketplace (regra 10).
 
-- **Público** — o que aparece no marketplace: nome, foto, espécie, porte, idade aproximada,
-  temperamento, descrição, localização da ONG.
-- **Interno** — o que só a organização vê: histórico operacional, cases, anotações.
+O cadastro é manual e **pode ser parcial**: a ONG registra o animal antes de ter todos os
+dados. Por isso a coluna abaixo é "obrigatório **para publicar**", não para cadastrar — é a
+publicação que exige a face pública mínima preenchida (regra 18), e a nulabilidade das colunas
+do schema acompanha o cadastro parcial.
 
-A separação é de modelagem, não de interface. Nenhum dado interno trafega para o
-marketplace; a face pública é um subconjunto explícito de campos.
+**Face pública** — o que aparece no marketplace:
+
+| Campo        | Tipo                            | Obrig. p/ publicar | Observação                                    |
+| ------------ | ------------------------------- | ------------------ | --------------------------------------------- |
+| nome         | texto                           | sim                |                                               |
+| espécie      | enum `Cão · Gato · Outro`       | sim                | valor controlado, base de filtro              |
+| sexo         | enum `Macho · Fêmea`            | sim                | base de filtro                                |
+| porte        | enum `Pequeno · Médio · Grande` | sim                | base de filtro                                |
+| faixa etária | enum `Filhote · Adulto · Idoso` | sim                | não idade exata — raramente sabida no resgate |
+| fotos        | lista de referências            | ≥1                 | armazenamento é decisão à parte               |
+| castrado     | booleano                        | não                | ausência = não informado                      |
+| vacinado     | booleano                        | não                | ausência = não informado                      |
+| temperamento | texto curto                     | não                | uma linha de personalidade                    |
+| descrição    | texto longo                     | não                | livre; absorve raça e detalhes fora de filtro |
+| localização  | derivada da organização         | não                | herdada da ONG; se ausente, sai do filtro     |
+
+**Face interna** — o que só a organização vê: histórico operacional, cases, anotações e os
+motivos por trás do status de ciclo de vida.
+
+> **Decisão.** Os campos de filtro — espécie, sexo, porte, faixa etária — são **enums de
+> valor controlado**, não texto livre. É o que torna a busca do marketplace (regra 10)
+> possível e comparável entre organizações: com texto livre viriam "cão", "cachorro" e "SRD
+> grande", e nenhum filtro funcionaria. Pela mesma razão a idade é **faixa etária**, não
+> número nem data — idade exata quase nunca é conhecida num resgate, e a faixa é honesta,
+> filtrável e comparável, a mesma lógica dos motivos de fechamento fixos (§4.3). Raça fica
+> fora da lista: em resgate é quase sempre indefinida, e o que houver cabe na descrição.
+>
+> **Cadastro parcial acomoda o resgate.** A incerteza do animal recém-chegado — sexo ainda
+> não examinado, porte de um filhote em crescimento — cabe no cadastro parcial: o campo fica
+> vazio e é preenchido antes de publicar. Por isso nenhum enum carrega um valor "desconhecido"
+> — a ausência já é o não-sabido.
+>
+> **Publicar exige a face pública mínima (regra 18):** os campos obrigatórios acima e ao menos uma
+> foto. A foto é opcional no cadastro — a ONG registra o animal antes de ter uma boa imagem —
+> mas um anúncio sem foto não converte adoção.
+>
+> **Localização.** Deriva da organização dona do animal (o `location` da ONG); o animal não
+> tem endereço próprio, e a regra 1 a torna a única fonte da localização pública. Ela **não**
+> entra na face pública mínima: se a ONG não preencheu sua localização, a vitrine não a exibe
+> e o animal fica fora do filtro por localização, mas segue no catálogo.
 
 ### 4.2 Publicação
 
 A visibilidade no marketplace é um controle **manual** da organização. O animal entra e sai
-da vitrine quando a ONG decide.
+da vitrine quando a ONG decide. Publicar exige a face pública mínima: os campos obrigatórios e
+ao menos uma foto (regra 18, §4.1).
 
 Exceção: **fechar um animal o despublica automaticamente.** A organização mantém o controle
 da publicação, mas o sistema impede o estado incoerente de um animal já adotado continuar
@@ -318,6 +361,7 @@ Canais: e-mail transacional e notificação in-app para adotantes com conta.
 15. Instâncias de pipeline copiam a estrutura da definição no momento da abertura.
 16. Editar uma definição de pipeline não afeta instâncias existentes.
 17. Uma organização nasce com pipelines pré-definidos e funcionais.
+18. Publicar um animal exige a face pública mínima: os campos obrigatórios da §4.1 e ao menos uma foto.
 
 ---
 
@@ -342,5 +386,4 @@ notificações.
 ## 12. Em aberto
 
 - Valor default de `N` dias para arquivamento.
-- Campos exatos da face pública do animal.
 - Conteúdo dos pipelines pré-definidos que uma organização recebe ao nascer.
