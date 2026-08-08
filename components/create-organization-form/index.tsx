@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 
 import { createOrganizationAction } from "@/app/organizations/new/actions";
 import { useAppForm } from "@/components/app-form";
+import { Button } from "@/components/button";
 import { createOrganizationInput } from "@/domain/organization/organization";
 
 import type { CreateOrganizationInput } from "@/domain/organization/organization";
@@ -24,7 +25,9 @@ export function CreateOrganizationForm() {
     },
     onSuccess: (result) => {
       router.push(
-        result?.unauthenticated ? "/sign-in?redirect=/organizations/new" : "/",
+        result?.unauthenticated
+          ? "/sign-in?redirect=/organizations/new"
+          : "/animals",
       );
     },
   });
@@ -75,13 +78,13 @@ export function CreateOrganizationForm() {
 
       <form.Subscribe selector={(state) => state.canSubmit}>
         {(canSubmit) => (
-          <button
-            className="bg-pine flex font-medium h-control items-center justify-center px-item rounded-md text-paper text-sm transition-colors w-full disabled:cursor-not-allowed disabled:opacity-60 hover:bg-pine-strong"
+          <Button
+            className="w-full"
             disabled={!canSubmit || mutation.isPending}
             type="submit"
           >
             {mutation.isPending ? "Criando…" : "Criar organização"}
-          </button>
+          </Button>
         )}
       </form.Subscribe>
     </form>

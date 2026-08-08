@@ -626,8 +626,10 @@ export async function listOrganizationAnimals() {
 }
 ```
 
-Sem sessão → `/sign-in`; sem org ativa, ou usuário que não é membro dela → `/organizations` (o
-seletor, que lista as orgs do usuário e cai em `/organizations/new` quando não há nenhuma). A
+Sem sessão → `/sign-in`; sem org ativa, ou usuário que não é membro dela → `/organizations/new`
+(criar organização). A org ativa é setada **explicitamente** — no login (hook de sessão, que
+elege a membership mais antiga), ao criar a org, ou pelo switcher do workspace — e o resolver
+**nunca a infere** das memberships; é essa exigência que fecha a fronteira (regra 1). A
 reconferência da membership não é zelo: `session`
 **não** tem chave estrangeira para `organization`, então um membro removido carregaria um
 `activeOrganizationId` órfão — o resolver barra isso.
