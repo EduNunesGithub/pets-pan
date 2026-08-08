@@ -4,7 +4,7 @@ import { useSearchParams } from "next/navigation";
 
 import type { Route } from "next";
 
-function toInternalPath(value: string | null): Route {
+function toInternalPath(value: null | string): Route {
   if (value && value.startsWith("/") && !value.startsWith("//")) {
     return value as Route;
   }

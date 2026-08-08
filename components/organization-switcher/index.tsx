@@ -9,7 +9,7 @@ import { authClient } from "@/auth/client";
 
 type OrganizationOption = {
   id: string;
-  location: string | null;
+  location: null | string;
   name: string;
 };
 
