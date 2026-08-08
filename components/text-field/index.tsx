@@ -27,9 +27,7 @@ export function TextField({
       invalid={showError}
       name={field.name}
     >
-      <Field.Label className="font-mono text-muted text-xs tracking-widest uppercase">
-        {label}
-      </Field.Label>
+      <Field.Label className="eyebrow text-muted">{label}</Field.Label>
       <Field.Control
         autoComplete={autoComplete}
         className="bg-transparent border-b border-line h-control outline-none text-base text-ink transition-colors w-full focus:border-pine focus:shadow-field-focus"
@@ -39,7 +37,7 @@ export function TextField({
         value={field.state.value}
       />
       {showError ? (
-        <Field.Error className="text-danger text-sm" match={true}>
+        <Field.Error className="text-danger" match={true}>
           {field.state.meta.errors.map((error) => error.message).join(", ")}
         </Field.Error>
       ) : null}

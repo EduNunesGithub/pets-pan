@@ -41,13 +41,11 @@ export function OrganizationSwitcher({
 
   return (
     <div className="border-b border-line flex flex-col gap-snug p-item">
-      <span className="font-mono text-muted text-xs tracking-widest uppercase">
-        Organização
-      </span>
+      <span className="eyebrow text-muted">Organização</span>
 
       <Menu.Root>
         <Menu.Trigger className="bg-card border border-line flex gap-inset h-control items-center px-inset rounded-md text-left transition-colors w-full focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-pine hover:border-pine">
-          <span className="flex-1 font-medium min-w-0 text-ink text-sm truncate">
+          <span className="flex-1 item min-w-0 text-ink truncate">
             {activeOrganization.name}
           </span>
 
@@ -56,24 +54,22 @@ export function OrganizationSwitcher({
 
         <Menu.Portal>
           <Menu.Positioner align="start" sideOffset={4}>
-            <Menu.Popup className="bg-card border border-line duration-150 ease-out flex flex-col gap-pair min-w-56 origin-top p-pair rounded-md shadow-card transition data-ending-style:opacity-0 data-ending-style:scale-95 data-starting-style:opacity-0 data-starting-style:scale-95">
+            <Menu.Popup className="bg-card border border-line flex flex-col gap-pair min-w-56 origin-top p-pair prose-admin rounded-md shadow-card transition data-ending-style:opacity-0 data-ending-style:scale-95 data-starting-style:opacity-0 data-starting-style:scale-95">
               {organizations.map((organization) => {
                 const isActive = organization.id === activeOrganization.id;
 
                 return (
                   <Menu.Item
-                    className="cursor-pointer flex gap-inset items-center justify-between px-inset py-snug rounded-sm data-disabled:cursor-default data-highlighted:bg-pine data-highlighted:text-paper"
+                    className="cursor-pointer flex gap-inset items-center justify-between px-inset py-snug rounded-sm transition-colors data-disabled:cursor-default data-highlighted:bg-pine data-highlighted:text-paper"
                     disabled={mutation.isPending || isActive}
                     key={organization.id}
                     onClick={() => mutation.mutate(organization.id)}
                   >
                     <span className="flex flex-col gap-pair min-w-0 text-left">
-                      <span className="font-medium text-sm truncate">
-                        {organization.name}
-                      </span>
+                      <span className="item truncate">{organization.name}</span>
 
                       {organization.location ? (
-                        <span className="font-mono opacity-70 text-xs truncate">
+                        <span className="meta opacity-70 truncate">
                           {organization.location}
                         </span>
                       ) : null}
@@ -94,7 +90,7 @@ export function OrganizationSwitcher({
       </Menu.Root>
 
       {mutation.error ? (
-        <p className="text-danger text-xs" role="alert">
+        <p className="text-danger" role="alert">
           {mutation.error.message}
         </p>
       ) : null}

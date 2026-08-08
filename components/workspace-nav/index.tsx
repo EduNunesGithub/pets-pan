@@ -10,9 +10,7 @@ export function WorkspaceNav({ canGovern }: { canGovern: boolean }) {
   return (
     <nav className="flex flex-1 flex-col gap-block px-snug py-item">
       <div className="flex flex-col gap-snug">
-        <span className="font-mono px-inset text-muted text-xs tracking-widest uppercase">
-          Operação
-        </span>
+        <span className="eyebrow px-inset text-muted">Operação</span>
 
         <WorkspaceNavItem
           active={pathname === "/animals"}
@@ -27,9 +25,7 @@ export function WorkspaceNav({ canGovern }: { canGovern: boolean }) {
 
       {canGovern ? (
         <div className="flex flex-col gap-snug">
-          <span className="font-mono px-inset text-muted text-xs tracking-widest uppercase">
-            Administração
-          </span>
+          <span className="eyebrow px-inset text-muted">Administração</span>
 
           <WorkspaceNavItem label="Membros" upcoming />
 
