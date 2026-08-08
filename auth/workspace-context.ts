@@ -10,7 +10,7 @@ import type { Role } from "@/domain/member/role";
 
 type WorkspaceOrganization = {
   id: string;
-  location: string | null;
+  location: null | string;
   name: string;
 };
 

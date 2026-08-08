@@ -29,6 +29,8 @@
     "eslint": "^9.39.5",
     "eslint-config-next": "^16.2.12",
     "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-perfectionist": "^5.10.1",
+    "eslint-plugin-unicorn": "^65.0.1",
     "husky": "^9.1.7",
     "lint-staged": "^17.2.0",
     "postcss": "^8.5.25",
@@ -42,7 +44,11 @@
   },
   "license": "ISC",
   "lint-staged": {
-    "**/*": "prettier --write --ignore-unknown"
+    "**/*": "prettier --write --ignore-unknown",
+    "**/*.{mjs,ts,tsx}": [
+      "eslint --fix --max-warnings=0",
+      "prettier --write"
+    ]
   },
   "name": "pets-pan",
   "scripts": {
@@ -53,11 +59,12 @@
     "dev": "next dev",
     "lint": "eslint",
     "lint:fix": "eslint --fix",
+    "prepare": "husky",
     "start": "next start",
     "test": "vitest run",
     "test:e2e": "playwright test",
     "test:watch": "vitest",
-    "prepare": "husky"
+    "typecheck": "tsc --noEmit"
   },
   "type": "module",
   "version": "1.0.0"

@@ -41,7 +41,7 @@ export const auth = betterAuth({
         },
       },
     }),
-    /* nextCookies precisa vir por último para setar o cookie de sessão */
+    /* order: nextCookies precisa vir por último para setar o cookie de sessão */
     nextCookies(),
   ],
 });
