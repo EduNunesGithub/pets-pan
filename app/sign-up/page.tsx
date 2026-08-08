@@ -11,10 +11,10 @@ export default function Page() {
       <Suspense fallback={<AuthFormSkeleton fields={3} />}>
         <SignUpForm />
 
-        <p className="text-muted text-sm">
+        <p className="text-muted">
           Já tem conta?{" "}
           <AuthSwitchLink
-            className="font-medium text-pine underline-offset-4 hover:underline"
+            className="item text-pine underline-offset-4 hover:underline"
             href="/sign-in"
           >
             Entrar

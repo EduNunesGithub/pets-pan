@@ -6,6 +6,7 @@ import * as z from "zod";
 
 import { authClient } from "@/auth/client";
 import { useAppForm } from "@/components/app-form";
+import { Button } from "@/components/button";
 import { useAuthRedirect } from "@/hooks/use-auth-redirect";
 
 const signUpInput = z.object({
@@ -89,13 +90,13 @@ export function SignUpForm() {
 
       <form.Subscribe selector={(state) => state.canSubmit}>
         {(canSubmit) => (
-          <button
-            className="bg-pine flex font-medium h-control items-center justify-center px-item rounded-md text-paper text-sm transition-colors w-full disabled:cursor-not-allowed disabled:opacity-60 hover:bg-pine-strong"
+          <Button
+            className="w-full"
             disabled={!canSubmit || mutation.isPending}
             type="submit"
           >
             {mutation.isPending ? "Criando conta…" : "Criar conta"}
-          </button>
+          </Button>
         )}
       </form.Subscribe>
     </form>

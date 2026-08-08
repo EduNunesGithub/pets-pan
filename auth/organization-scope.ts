@@ -18,7 +18,7 @@ export async function requireActiveOrganization(): Promise<OrganizationScope> {
   const activeOrganizationId = authSession.session.activeOrganizationId;
 
   if (!activeOrganizationId) {
-    redirect("/organizations");
+    redirect("/organizations/new");
   }
 
   const membership = await db.query.member.findFirst({
@@ -30,7 +30,7 @@ export async function requireActiveOrganization(): Promise<OrganizationScope> {
   });
 
   if (!membership) {
-    redirect("/organizations");
+    redirect("/organizations/new");
   }
 
   return activeOrganizationId as OrganizationScope;

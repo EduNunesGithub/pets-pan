@@ -14,6 +14,9 @@
   --color-status-archived: #9a9384;
   --color-status-closed: #5a5a63;
 
+  --default-transition-duration: 150ms;
+  --default-transition-timing-function: var(--ease-out);
+
   --font-mono:
     var(--font-ibm-plex-mono), ui-monospace, "SFMono-Regular", monospace;
   --font-sans: var(--font-ibm-plex-sans), ui-sans-serif, system-ui, sans-serif;
@@ -41,4 +44,39 @@
     font-family: var(--font-sans);
     position: relative;
   }
+}
+
+.prose-admin,
+.prose-storefront {
+  @apply text-sm;
+}
+
+.prose-admin h1,
+.prose-storefront h1 {
+  @apply font-semibold text-2xl tracking-tight;
+}
+
+.prose-admin h2,
+.prose-storefront h2 {
+  @apply font-semibold text-lg tracking-tight;
+}
+
+.prose-admin h3,
+.prose-storefront h3 {
+  @apply font-medium text-base tracking-tight;
+}
+
+.prose-admin .eyebrow,
+.prose-storefront .eyebrow {
+  @apply font-mono text-xs tracking-widest uppercase;
+}
+
+.prose-admin .item,
+.prose-storefront .item {
+  @apply font-medium text-sm;
+}
+
+.prose-admin .meta,
+.prose-storefront .meta {
+  @apply font-mono text-xs;
 }

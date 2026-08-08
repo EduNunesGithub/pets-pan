@@ -5,7 +5,7 @@ import { WorkspaceSidebarFallback } from "@/components/workspace-sidebar-fallbac
 
 export default function Layout({ children }: LayoutProps<"/">) {
   return (
-    <div className="flex min-h-dvh">
+    <div className="flex min-h-dvh prose-admin">
       <aside className="bg-card border-line border-r flex flex-col h-dvh sticky top-0 w-64">
         <Suspense fallback={<WorkspaceSidebarFallback />}>
           <WorkspaceSidebar />

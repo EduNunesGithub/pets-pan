@@ -35,7 +35,7 @@ export async function resolveWorkspaceContext(): Promise<WorkspaceContext> {
   const activeOrganizationId = session.session.activeOrganizationId;
 
   if (!activeOrganizationId) {
-    redirect("/organizations");
+    redirect("/organizations/new");
   }
 
   const membership = await db.query.member.findFirst({
@@ -47,7 +47,7 @@ export async function resolveWorkspaceContext(): Promise<WorkspaceContext> {
   });
 
   if (!membership) {
-    redirect("/organizations");
+    redirect("/organizations/new");
   }
 
   const organizations = await auth.api.listOrganizations({
@@ -59,7 +59,7 @@ export async function resolveWorkspaceContext(): Promise<WorkspaceContext> {
   );
 
   if (!activeOrganization) {
-    redirect("/organizations");
+    redirect("/organizations/new");
   }
 
   return {
