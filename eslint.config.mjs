@@ -14,11 +14,26 @@ const ORDER_PATTERN = /^order:\s+\S/;
 
 const noCommentsRule = {
   create(context) {
+    const enforceBlockComment = (comment) => {
+      if (comment.type !== "Line") {
+        return;
+      }
+      context.report({
+        fix: comment.value.includes("*/")
+          ? undefined
+          : (fixer) =>
+              fixer.replaceTextRange(comment.range, `/*${comment.value} */`),
+        loc: comment.loc,
+        messageId: "lineComment",
+      });
+    };
+
     return {
       Program() {
         for (const comment of context.sourceCode.getAllComments()) {
           const text = comment.value.trim();
           if (text.startsWith("@ts-expect-error") || ORDER_PATTERN.test(text)) {
+            enforceBlockComment(comment);
             continue;
           }
           if (DIRECTIVE_PATTERN.test(text)) {
@@ -30,7 +45,9 @@ const noCommentsRule = {
                 loc: comment.loc,
                 messageId: "missingJustification",
               });
+              continue;
             }
+            enforceBlockComment(comment);
             continue;
           }
           context.report({ loc: comment.loc, messageId: "forbidden" });
@@ -39,9 +56,12 @@ const noCommentsRule = {
     };
   },
   meta: {
+    fixable: "code",
     messages: {
       forbidden:
-        "Comments are forbidden. Allowed forms: an eslint-disable directive with a '-- justification', 'order: <reason>' justifying a semantic sequence, or @ts-expect-error with a description.",
+        "Comments are forbidden. Allowed forms, each written as a /* */ block comment: an eslint-disable directive with a '-- justification', 'order: <reason>' justifying a semantic sequence, or @ts-expect-error with a description.",
+      lineComment:
+        "Line comments (//) are forbidden. Use a /* */ block comment instead.",
       missingJustification:
         "eslint-disable directives require a justification: append '-- <reason>'.",
     },

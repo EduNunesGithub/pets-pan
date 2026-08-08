@@ -14,7 +14,8 @@ sujeita às mesmas regras que um arquivo novo.
 ordem alfabética (imports, exports, props de type/interface/objeto, enums, unions, props
 JSX, membros de classe), grupos de import (side-effect → externo → alias `@/` → type-only),
 proibição de import relativo, `kebab-case` em nomes de arquivo, proibição de `any` e
-`@ts-ignore`, proibição de comentários e um componente React por arquivo.
+`@ts-ignore`, comentários apenas em bloco `/* */` nas formas permitidas (linha `//`
+proibida) e um componente React por arquivo.
 
 Depois de qualquer alteração: `npm run lint:fix` corrige o corrigível; `npm run lint` +
 `npx tsc --noEmit` devem passar limpos. Não reporte conclusão com lint vermelho.
@@ -24,12 +25,14 @@ Depois de qualquer alteração: `npm run lint:fix` corrige o corrigível; `npm r
 Quando uma sequência carrega significado (etapas de funil, precedência de plugin), a ordem
 alfabética cede — mas a exceção precisa ser visível e justificada:
 
-- Uma regra do lint acusou a lista → `// eslint-disable-next-line <regra> -- <motivo>`.
-- Nenhuma regra acusa (arrays, ordem de plugins) → comentário `// order: <motivo>`.
-- `@ts-expect-error` exige descrição na própria linha; `@ts-ignore` é proibido.
+- Uma regra do lint acusou a lista → `/* eslint-disable-next-line <regra> -- <motivo> */`.
+- Nenhuma regra acusa (arrays, ordem de plugins) → comentário `/* order: <motivo> */`.
+- `@ts-expect-error` exige descrição → `/* @ts-expect-error <descrição> */`; `@ts-ignore` é proibido.
 
-Essas são as únicas formas de comentário permitidas. Qualquer outra o lint rejeita — se
-deu vontade de comentar, o código não está claro: renomeie, extraia, dê nome à constante.
+Essas são as únicas formas de comentário permitidas, e **sempre em bloco `/* */`** —
+comentário de linha `//` é proibido em qualquer conteúdo, e o `lint:fix` converte `//` em
+`/* */` quando o conteúdo é permitido. Qualquer outra forma o lint rejeita: se deu vontade
+de comentar prosa, o código não está claro — renomeie, extraia, dê nome à constante.
 
 Nunca reordene parâmetros de função por alfabeto: a posição deles é semântica e nenhum
 lint protege isso.
