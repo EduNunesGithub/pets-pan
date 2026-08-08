@@ -8,9 +8,11 @@
     "better-auth": "^1.6.25",
     "bufferutil": "^4.1.0",
     "drizzle-orm": "1.0.0-rc.4",
+    "lucide-react": "^1.30.0",
     "next": "^16.2.12",
     "react": "^19.2.8",
     "react-dom": "^19.2.8",
+    "tailwind-merge": "^3.6.0",
     "ws": "^8.21.1",
     "zod": "4.4.3"
   },

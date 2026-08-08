@@ -33,7 +33,7 @@ export function OrganizationSelector({
       }
     },
     onSuccess: () => {
-      router.push(redirectTo);
+      router.push(redirectTo === "/" ? "/animals" : redirectTo);
     },
   });
 
