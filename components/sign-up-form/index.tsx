@@ -35,8 +35,12 @@ export function SignUpForm() {
 
   const form = useAppForm({
     defaultValues: { email: "", name: "", password: "" },
-    onSubmit: ({ value }) => {
-      mutation.mutate(value);
+    onSubmit: ({ formApi, value }) => {
+      mutation.mutate(value, {
+        onSuccess: () => {
+          formApi.reset();
+        },
+      });
     },
     validators: { onChange: signUpInput },
   });

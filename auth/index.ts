@@ -9,6 +9,26 @@ import { founderRole } from "@/domain/organization/organization";
 
 export const auth = betterAuth({
   database: drizzleAdapter(db, { provider: "pg", schema }),
+  databaseHooks: {
+    session: {
+      create: {
+        before: async (session) => {
+          const membership = await db.query.member.findFirst({
+            columns: { organizationId: true },
+            orderBy: { createdAt: "asc" },
+            where: { userId: session.userId },
+          });
+
+          return {
+            data: {
+              ...session,
+              activeOrganizationId: membership?.organizationId ?? null,
+            },
+          };
+        },
+      },
+    },
+  },
   emailAndPassword: { enabled: true },
   plugins: [
     organization({
