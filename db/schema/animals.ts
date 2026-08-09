@@ -9,24 +9,20 @@ import {
 } from "drizzle-orm/pg-core";
 
 import { organization } from "@/db/schema/auth";
+import {
+  ageGroups,
+  sexes,
+  sizes,
+  species as speciesValues,
+} from "@/domain/animal/animal";
 
-export const ageGroup = pgEnum("age_group", [
-  /* order: crescente por faixa etária */
-  "baby",
-  "adult",
-  "senior",
-]);
+export const ageGroup = pgEnum("age_group", ageGroups);
 
-export const sex = pgEnum("sex", ["female", "male"]);
+export const sex = pgEnum("sex", sexes);
 
-export const size = pgEnum("size", [
-  /* order: crescente por porte */
-  "small",
-  "medium",
-  "large",
-]);
+export const size = pgEnum("size", sizes);
 
-export const species = pgEnum("species", ["cat", "dog", "other"]);
+export const species = pgEnum("species", speciesValues);
 
 export const animals = snakeCase.table(
   "animals",

@@ -1,6 +1,6 @@
 ---
 name: domain-reviewer
-description: Revisa código contra o modelo de domínio e as 18 regras de negócio de docs/domain.md. Acione quando o diff toca domain/, schema de entidade de domínio em db/schema, ou comportamento coberto por regra numerada (abrir/fechar case, publicar/arquivar animal, candidatura, papéis) — e antes de considerar essa feature concluída. NÃO acione para mudança puramente visual, de navegação ou de apresentação que não altera comportamento de regra. Somente leitura: aponta divergências, não corrige.
+description: Revisa código contra o modelo de domínio e as 18 regras de negócio de docs/domain.md. Acione quando o diff toca domain/, schema de entidade de domínio em db/schema, ou comportamento coberto por regra numerada (abrir/fechar case, publicar/arquivar animal, candidatura, papéis) — e antes de considerar essa feature concluída. NÃO acione para mudança puramente visual, de navegação ou de apresentação que não altera comportamento de regra. Somente leitura — aponta divergências, não corrige.
 tools: Bash, Glob, Grep, Read
 ---
 
