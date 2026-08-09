@@ -14,12 +14,12 @@ const navGroups = [
 export function WorkspaceSidebarFallback() {
   return (
     <>
-      <div className="border-b border-line flex flex-col gap-snug p-item">
-        <Skeleton className="rounded-sm text-xs w-24" />
-        <Skeleton className="h-control rounded-md w-full" />
+      <div className="flex flex-col gap-snug border-b border-line p-item">
+        <Skeleton className="w-24 rounded-sm text-xs" />
+        <Skeleton className="h-control w-full rounded-md" />
       </div>
 
-      <nav className="flex flex-1 flex-col gap-block px-snug py-item">
+      <nav className="flex min-h-0 flex-1 flex-col gap-block overflow-y-auto px-snug py-item">
         {navGroups.map((group) => (
           <div className="flex flex-col gap-snug" key={group.key}>
             <div className="px-inset">
@@ -30,7 +30,7 @@ export function WorkspaceSidebarFallback() {
 
             {group.itemWidths.map((width) => (
               <div
-                className="border-l-2 border-transparent flex items-center px-inset py-snug"
+                className="flex items-center border-l-2 border-transparent px-inset py-snug"
                 key={width}
               >
                 <Skeleton className={twMerge("rounded-sm text-sm", width)} />
@@ -40,9 +40,9 @@ export function WorkspaceSidebarFallback() {
         ))}
       </nav>
 
-      <div className="border-line border-t flex flex-col gap-snug p-item">
-        <Skeleton className="rounded-sm text-xs w-16" />
-        <Skeleton className="h-control rounded-md w-full" />
+      <div className="flex flex-col gap-snug border-t border-line p-item">
+        <Skeleton className="w-16 rounded-sm text-xs" />
+        <Skeleton className="h-control w-full rounded-md" />
       </div>
     </>
   );

@@ -4,8 +4,8 @@ import { Button } from "@/components/button";
 
 export default function Page() {
   return (
-    <div className="flex flex-col gap-block max-w-2xl">
-      <header className="flex gap-block items-start justify-between">
+    <div className="flex flex-col gap-block">
+      <header className="flex items-start justify-between gap-block">
         <div className="flex flex-col gap-pair">
           <span className="eyebrow text-muted">Operação</span>
 
@@ -17,7 +17,7 @@ export default function Page() {
         </Button>
       </header>
 
-      <section className="bg-card border border-line flex flex-col gap-section items-center px-block py-frame rounded-md text-center">
+      <section className="flex flex-col items-center gap-section rounded-md border border-line bg-card px-block py-frame text-center">
         <div className="flex flex-col gap-pair">
           <p className="item text-ink">Nenhum animal ainda.</p>
 
