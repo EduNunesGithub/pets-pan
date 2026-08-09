@@ -8,7 +8,7 @@ export function WorkspaceNav({ canGovern }: { canGovern: boolean }) {
   const pathname = usePathname();
 
   return (
-    <nav className="flex flex-1 flex-col gap-block px-snug py-item">
+    <nav className="flex min-h-0 flex-1 flex-col gap-block overflow-y-auto px-snug py-item">
       <div className="flex flex-col gap-snug">
         <span className="eyebrow px-inset text-muted">Operação</span>
 

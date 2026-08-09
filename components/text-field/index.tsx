@@ -30,7 +30,7 @@ export function TextField({
       <Field.Label className="eyebrow text-muted">{label}</Field.Label>
       <Field.Control
         autoComplete={autoComplete}
-        className="bg-transparent border-b border-line h-control outline-none text-base text-ink transition-colors w-full focus:border-pine focus:shadow-field-focus"
+        className="h-control w-full border-b border-line bg-transparent text-base text-ink transition-colors outline-none focus:border-pine focus:shadow-field-focus"
         onBlur={field.handleBlur}
         onChange={(event) => field.handleChange(event.target.value)}
         type={type}

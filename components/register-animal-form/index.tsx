@@ -76,7 +76,7 @@ export function RegisterAnimalForm() {
 
   return (
     <form
-      className="flex flex-col gap-block max-w-lg"
+      className="flex flex-col gap-block"
       onSubmit={(event) => {
         event.preventDefault();
         event.stopPropagation();
@@ -120,7 +120,7 @@ export function RegisterAnimalForm() {
 
         {mutation.error ? (
           <p
-            className="bg-danger/6 border border-danger/30 px-inset py-snug rounded-sm text-danger text-sm"
+            className="rounded-sm border border-danger/30 bg-danger/6 px-inset py-snug text-sm text-danger"
             role="alert"
           >
             {mutation.error.message}

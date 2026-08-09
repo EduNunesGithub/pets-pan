@@ -37,6 +37,11 @@
 }
 
 @layer base {
+  * {
+    scrollbar-color: var(--color-line) transparent;
+    scrollbar-width: thin;
+  }
+
   body {
     -webkit-font-smoothing: antialiased;
     background-color: var(--color-paper);
@@ -53,17 +58,17 @@
 
 .prose-admin h1,
 .prose-storefront h1 {
-  @apply font-semibold text-2xl tracking-tight;
+  @apply text-2xl font-semibold tracking-tight;
 }
 
 .prose-admin h2,
 .prose-storefront h2 {
-  @apply font-semibold text-lg tracking-tight;
+  @apply text-lg font-semibold tracking-tight;
 }
 
 .prose-admin h3,
 .prose-storefront h3 {
-  @apply font-medium text-base tracking-tight;
+  @apply text-base font-medium tracking-tight;
 }
 
 .prose-admin .eyebrow,
@@ -73,7 +78,7 @@
 
 .prose-admin .item,
 .prose-storefront .item {
-  @apply font-medium text-sm;
+  @apply text-sm font-medium;
 }
 
 .prose-admin .meta,

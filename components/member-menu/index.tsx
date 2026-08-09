@@ -30,19 +30,19 @@ export function MemberMenu({
   }
 
   return (
-    <div className="border-line border-t flex flex-col gap-snug p-item">
+    <div className="flex flex-col gap-snug border-t border-line p-item">
       <span className="eyebrow text-muted">{roleLabels[role]}</span>
 
       <Menu.Root>
-        <Menu.Trigger className="bg-card border border-line flex gap-inset h-control items-center px-inset rounded-md text-left transition-colors w-full focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-pine hover:border-pine">
-          <span className="flex-1 item min-w-0 text-ink truncate">{name}</span>
+        <Menu.Trigger className="flex h-control w-full items-center gap-inset rounded-md border border-line bg-card px-inset text-left transition-colors hover:border-pine focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-pine">
+          <span className="item min-w-0 flex-1 truncate text-ink">{name}</span>
 
-          <ChevronsUpDown aria-hidden className="shrink-0 size-4 text-muted" />
+          <ChevronsUpDown aria-hidden className="size-4 shrink-0 text-muted" />
         </Menu.Trigger>
 
         <Menu.Portal>
           <Menu.Positioner align="start" side="top" sideOffset={4}>
-            <Menu.Popup className="bg-card border border-line flex flex-col gap-pair min-w-56 origin-bottom p-pair prose-admin rounded-md shadow-card transition data-ending-style:opacity-0 data-ending-style:scale-95 data-starting-style:opacity-0 data-starting-style:scale-95">
+            <Menu.Popup className="prose-admin flex min-w-56 origin-bottom flex-col gap-pair rounded-md border border-line bg-card p-pair shadow-card transition data-ending-style:scale-95 data-ending-style:opacity-0 data-starting-style:scale-95 data-starting-style:opacity-0">
               <span className="flex flex-col gap-pair px-inset py-snug">
                 <span className="eyebrow text-muted">Sessão</span>
 
@@ -50,10 +50,10 @@ export function MemberMenu({
               </span>
 
               <Menu.Item
-                className="cursor-pointer flex gap-inset items-center px-inset py-snug rounded-sm text-left transition-colors data-highlighted:bg-pine data-highlighted:text-paper"
+                className="flex cursor-pointer items-center gap-inset rounded-sm px-inset py-snug text-left transition-colors data-highlighted:bg-pine data-highlighted:text-paper"
                 onClick={signOut}
               >
-                <LogOut aria-hidden className="shrink-0 size-4" />
+                <LogOut aria-hidden className="size-4 shrink-0" />
                 Sair
               </Menu.Item>
             </Menu.Popup>
