@@ -23,7 +23,7 @@ export function TextAreaField({ label, rows = 4 }: TextAreaFieldProps) {
       <Field.Label className="eyebrow text-muted">{label}</Field.Label>
 
       <Field.Control
-        className="bg-transparent border-b border-line outline-none py-1.5 resize-y text-base text-ink transition-colors w-full focus:border-pine focus:shadow-field-focus"
+        className="w-full resize-y border-b border-line bg-transparent py-1.5 text-base text-ink transition-colors outline-none focus:border-pine focus:shadow-field-focus"
         onBlur={field.handleBlur}
         onChange={(event) => field.handleChange(event.target.value)}
         render={<textarea rows={rows} />}

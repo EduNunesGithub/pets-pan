@@ -80,7 +80,7 @@ export function SignUpForm() {
 
         {mutation.error ? (
           <p
-            className="bg-danger/6 border border-danger/30 px-inset py-snug rounded-sm text-danger text-sm"
+            className="rounded-sm border border-danger/30 bg-danger/6 px-inset py-snug text-sm text-danger"
             role="alert"
           >
             {mutation.error.message}

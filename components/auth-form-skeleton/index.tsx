@@ -11,16 +11,16 @@ export function AuthFormSkeleton({ fields }: AuthFormSkeletonProps) {
         <div className="flex flex-col gap-item">
           {Array.from({ length: fields }, (_, index) => (
             <div className="flex flex-col gap-pair" key={index}>
-              <Skeleton className="rounded-sm text-xs w-16" />
-              <Skeleton className="h-control rounded-sm w-full" />
+              <Skeleton className="w-16 rounded-sm text-xs" />
+              <Skeleton className="h-control w-full rounded-sm" />
             </div>
           ))}
         </div>
 
-        <Skeleton className="h-control rounded-md w-full" />
+        <Skeleton className="h-control w-full rounded-md" />
       </div>
 
-      <Skeleton className="rounded-sm text-sm w-40" />
+      <Skeleton className="w-40 rounded-sm text-sm" />
     </>
   );
 }

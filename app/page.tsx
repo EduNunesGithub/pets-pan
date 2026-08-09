@@ -8,7 +8,7 @@ export default function Page() {
     <main>
       <h1>pet-monorepo</h1>
 
-      <Suspense fallback={<Skeleton className="rounded-sm text-base w-56" />}>
+      <Suspense fallback={<Skeleton className="w-56 rounded-sm text-base" />}>
         <SessionStatus />
       </Suspense>
     </main>

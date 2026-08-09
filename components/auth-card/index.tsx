@@ -8,11 +8,11 @@ type AuthCardProps = {
 
 export function AuthCard({ children, kicker, title }: AuthCardProps) {
   return (
-    <main className="flex flex-col gap-block items-center justify-center min-h-dvh prose-admin px-block py-frame">
+    <main className="prose-admin flex min-h-dvh flex-col items-center justify-center gap-block px-block py-frame">
       <p className="eyebrow text-muted">pet · monorepo</p>
 
-      <section className="bg-card border border-line flex flex-col gap-section max-w-sm px-block py-block relative rounded-md shadow-card w-full">
-        <span className="-translate-y-1/2 absolute bg-card border border-b-0 border-line eyebrow left-block px-inset py-pair rounded-t-sm text-pine top-0">
+      <section className="relative flex w-full max-w-sm flex-col gap-section rounded-md border border-line bg-card px-block py-block shadow-card">
+        <span className="eyebrow absolute top-0 left-block -translate-y-1/2 rounded-t-sm border border-b-0 border-line bg-card px-inset py-pair text-pine">
           {kicker}
         </span>
 
