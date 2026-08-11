@@ -29,7 +29,7 @@ export function WorkspaceShell({ children, sidebar }: WorkspaceShellProps) {
           </header>
 
           <main className="flex-1 px-item py-item sm:px-wide sm:py-wide">
-            <div className="mx-auto w-full max-w-2xl">{children}</div>
+            {children}
           </main>
         </div>
 

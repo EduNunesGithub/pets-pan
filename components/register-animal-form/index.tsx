@@ -7,20 +7,14 @@ import { registerAnimalAction } from "@/app/(workspace)/animals/new/actions";
 import { useAppForm } from "@/components/app-form";
 import { Button } from "@/components/button";
 import { registerAnimalInput } from "@/domain/animal/animal";
+import {
+  ageGroupOptions,
+  sexOptions,
+  sizeOptions,
+  speciesOptions,
+} from "@/domain/animal/labels";
 
-import type {
-  AgeGroup,
-  RegisterAnimalFields,
-  Sex,
-  Size,
-  Species,
-} from "@/domain/animal/animal";
-
-const ageGroupOptions: readonly { label: string; value: AgeGroup }[] = [
-  { label: "Filhote", value: "baby" },
-  { label: "Adulto", value: "adult" },
-  { label: "Idoso", value: "senior" },
-];
+import type { RegisterAnimalFields } from "@/domain/animal/animal";
 
 const emptyFields: RegisterAnimalFields = {
   ageGroup: "",
@@ -31,23 +25,6 @@ const emptyFields: RegisterAnimalFields = {
   species: "",
   temperament: "",
 };
-
-const sexOptions: readonly { label: string; value: Sex }[] = [
-  { label: "Fêmea", value: "female" },
-  { label: "Macho", value: "male" },
-];
-
-const sizeOptions: readonly { label: string; value: Size }[] = [
-  { label: "Pequeno", value: "small" },
-  { label: "Médio", value: "medium" },
-  { label: "Grande", value: "large" },
-];
-
-const speciesOptions: readonly { label: string; value: Species }[] = [
-  { label: "Cão", value: "dog" },
-  { label: "Gato", value: "cat" },
-  { label: "Outro", value: "other" },
-];
 
 export function RegisterAnimalForm() {
   const router = useRouter();
