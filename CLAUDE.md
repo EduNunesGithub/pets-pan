@@ -61,6 +61,11 @@ visual ou de navegação não dispara.
 
 Lib ou framework sem skill correspondente: **pare e pergunte**. Não escreva API de memória.
 
+**Skills de terceiros.** Alguns pacotes publicam agent-skills em
+`node_modules/<pacote>/skills/<nome>/SKILL.md` (drizzle-kit). O `AGENTS.md` (gerado por
+`npx @tanstack/intent install --map`) mapeia tarefa→skill; carregue sob demanda com
+`npx @tanstack/intent load <id>` ou leia o `SKILL.md`.
+
 ## Domínio
 
 `docs/domain.md` é a fonte de verdade do modelo e das **18 regras de negócio** numeradas.
@@ -83,8 +88,11 @@ não invente a solução — aponte a contradição.
   (entry guarded); `db/index.ts` e `auth/index.ts` não têm `server-only` (a CLI os carrega).
 - **Domínio**: `domain/organization` (criação) e `domain/member` (papéis e permissões)
   implementados com testes. Demais entidades de `docs/domain.md` ainda não existem.
-- **UI**: sign-in/sign-up, criação de organização e a casca do workspace
-  (`app/(workspace)` — sidebar, nav, switcher de organização) com sessão sob `<Suspense>`.
+- **UI**: sign-in/sign-up, criação de organização, a casca responsiva do workspace
+  (`app/(workspace)` — sidebar/drawer, nav, switcher de organização) com sessão sob
+  `<Suspense>`, e o cadastro + a listagem de animais (busca por nome, filtros de espécie/
+  sexo/porte/faixa etária e paginação **server-side** dirigidos por `searchParams`, com a
+  query escopada e paginada no Postgres sob `<Suspense>`).
 - **Banco**: Neon + Drizzle v1 (driver `neon-serverless`), migrações em `drizzle/`,
   scripts `db:generate`/`db:migrate`/`db:studio`.
 - **Cache**: Cache Components (PPR) — nada é cacheado sem `'use cache'`; sem
