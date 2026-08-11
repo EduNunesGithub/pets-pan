@@ -1,5 +1,6 @@
 "use client";
 
+import { Button } from "@base-ui/react/button";
 import { useRouter } from "next/navigation";
 
 import { authClient } from "@/auth/client";
@@ -12,9 +13,5 @@ export function SignOutButton() {
     router.refresh();
   }
 
-  return (
-    <button onClick={signOut} type="button">
-      Sair
-    </button>
-  );
+  return <Button onClick={signOut}>Sair</Button>;
 }
