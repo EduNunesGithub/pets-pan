@@ -25,3 +25,14 @@ export const speciesOptions: readonly { label: string; value: Species }[] = [
   { label: "Gato", value: "cat" },
   { label: "Outro", value: "other" },
 ];
+
+export function optionLabel(
+  options: readonly { label: string; value: string }[],
+  value: null | string,
+): string {
+  if (!value) {
+    return "—";
+  }
+
+  return options.find((option) => option.value === value)?.label ?? "—";
+}

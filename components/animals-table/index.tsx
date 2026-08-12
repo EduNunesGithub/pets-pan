@@ -1,9 +1,13 @@
+import { Eye } from "lucide-react";
+import Link from "next/link";
 import { twMerge } from "tailwind-merge";
 
 import { AnimalVisibilityBadge } from "@/components/animal-visibility-badge";
 import { AnimalsSortHeader } from "@/components/animals-sort-header";
+import { IconButton } from "@/components/icon-button";
 import {
   ageGroupOptions,
+  optionLabel,
   sexOptions,
   sizeOptions,
   speciesOptions,
@@ -28,29 +32,24 @@ const dateFormatter = new Intl.DateTimeFormat("pt-BR", {
   day: "2-digit",
   month: "short",
   timeZone: "America/Sao_Paulo",
+  timeZoneName: "short",
   year: "numeric",
 });
-
-function optionLabel(
-  options: readonly { label: string; value: string }[],
-  value: null | string,
-): string {
-  if (!value) {
-    return "—";
-  }
-
-  return options.find((option) => option.value === value)?.label ?? "—";
-}
 
 const columns: AnimalColumn[] = [
   /* order: ordem de exibição das colunas */
   {
-    cell: (animal) =>
-      animal.name ? (
-        <span className="item text-ink">{animal.name}</span>
-      ) : (
-        <span className="text-muted italic">Sem nome</span>
-      ),
+    cell: (animal) => (
+      <Link
+        className={twMerge(
+          "item transition-colors hover:text-pine",
+          animal.name ? "text-ink" : "text-muted italic",
+        )}
+        href={`/animals/${animal.id}`}
+      >
+        {animal.name ?? "Sem nome"}
+      </Link>
+    ),
     header: "Nome",
     sort: "name",
   },
@@ -87,6 +86,22 @@ const columns: AnimalColumn[] = [
     className: "hidden sm:table-cell",
     header: "Cadastrado em",
     sort: "createdAt",
+  },
+  {
+    align: "end",
+    cell: (animal) => (
+      <div className="flex justify-end">
+        <IconButton
+          aria-label="Ver detalhes"
+          nativeButton={false}
+          render={<Link href={`/animals/${animal.id}`} />}
+        >
+          <Eye aria-hidden className="size-4" />
+        </IconButton>
+      </div>
+    ),
+    className: "w-0",
+    header: "",
   },
 ];
 
