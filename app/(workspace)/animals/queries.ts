@@ -1,6 +1,7 @@
 import "server-only";
 
 import { and, asc, count, desc, eq, ilike } from "drizzle-orm";
+import * as z from "zod";
 
 import { animals } from "@/db/schema/animals";
 import { db, requireActiveOrganization } from "@/server";
@@ -15,6 +16,22 @@ type AnimalListResult = {
   rows: Animal[];
   total: number;
 };
+
+export async function getOrganizationAnimal(
+  id: string,
+): Promise<Animal | undefined> {
+  const organizationId = await requireActiveOrganization();
+
+  const parsedId = z.uuid().safeParse(id);
+
+  if (!parsedId.success) {
+    return undefined;
+  }
+
+  return db.query.animals.findFirst({
+    where: { id: parsedId.data, organizationId },
+  });
+}
 
 export async function listOrganizationAnimals(
   params: AnimalListParams,

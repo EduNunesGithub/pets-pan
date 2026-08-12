@@ -1,6 +1,4 @@
-import { ArrowLeft } from "lucide-react";
-import Link from "next/link";
-
+import { BackLink } from "@/components/back-link";
 import { PageContainer } from "@/components/page-container";
 import { RegisterAnimalForm } from "@/components/register-animal-form";
 
@@ -9,13 +7,7 @@ export default function Page() {
     <PageContainer>
       <div className="flex flex-col gap-block">
         <header className="flex flex-col gap-snug">
-          <Link
-            className="flex w-fit items-center gap-pair text-muted transition-colors hover:text-pine"
-            href="/animals"
-          >
-            <ArrowLeft aria-hidden className="size-4" />
-            <span className="item">Animais</span>
-          </Link>
+          <BackLink href="/animals">Animais</BackLink>
 
           <div className="flex flex-col gap-pair">
             <h1 className="text-ink">Cadastrar animal</h1>
