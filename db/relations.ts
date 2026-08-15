@@ -1,5 +1,6 @@
 import { defineRelations } from "drizzle-orm";
 
+import { animalPhotos } from "@/db/schema/animal-photos";
 import { animals } from "@/db/schema/animals";
 import {
   account,
@@ -14,6 +15,7 @@ import {
 export const relations = defineRelations(
   {
     account,
+    animalPhotos,
     animals,
     invitation,
     member,
@@ -26,11 +28,18 @@ export const relations = defineRelations(
     account: {
       user: r.one.user({ from: r.account.userId, to: r.user.id }),
     },
+    animalPhotos: {
+      animal: r.one.animals({
+        from: r.animalPhotos.animalId,
+        to: r.animals.id,
+      }),
+    },
     animals: {
       organization: r.one.organization({
         from: r.animals.organizationId,
         to: r.organization.id,
       }),
+      photos: r.many.animalPhotos(),
     },
     invitation: {
       organization: r.one.organization({

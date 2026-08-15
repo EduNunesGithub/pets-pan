@@ -6,6 +6,7 @@ import * as z from "zod";
 import { animals } from "@/db/schema/animals";
 import { db, requireActiveOrganization } from "@/server";
 
+import type { AnimalPhoto } from "@/db/schema/animal-photos";
 import type { Animal } from "@/db/schema/animals";
 import type { AnimalListParams } from "@/domain/animal/list-params";
 
@@ -30,6 +31,23 @@ export async function getOrganizationAnimal(
 
   return db.query.animals.findFirst({
     where: { id: parsedId.data, organizationId },
+  });
+}
+
+export async function getOrganizationAnimalPhotos(
+  animalId: string,
+): Promise<AnimalPhoto[]> {
+  const organizationId = await requireActiveOrganization();
+
+  const parsedId = z.uuid().safeParse(animalId);
+
+  if (!parsedId.success) {
+    return [];
+  }
+
+  return db.query.animalPhotos.findMany({
+    orderBy: { createdAt: "asc", position: "asc" },
+    where: { animal: { organizationId }, animalId: parsedId.data },
   });
 }
 
