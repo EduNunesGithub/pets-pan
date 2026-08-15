@@ -54,6 +54,9 @@ visual ou de navegação não dispara.
 | `tanstack-form`        | Formulário com estado: `useForm`, campos, validação, submit.           |
 | `tanstack-react-query` | Estado de servidor no cliente: queries, mutations, invalidation.       |
 | `base-ui`              | Primitivo de UI interativo — modal, menu, select, tooltip, `render`.   |
+| `vercel-blob`          | Upload, remoção, listagem de arquivo; foto persistida no Blob.         |
+| `sharp`                | Processamento de imagem no servidor — resize, webp, EXIF, `metadata`.  |
+| `react-dropzone`       | Área de drag'n'drop; campo de upload de arquivo por drop/seleção.      |
 | `frontend-design`      | Direção visual ao construir ou remodelar UI.                           |
 | `vitest`               | Teste de domínio: `*.test.ts`, mock, config do runner.                 |
 | `playwright`           | Teste E2E: `e2e/*.spec.ts`, `webServer`, config.                       |
@@ -97,6 +100,12 @@ não invente a solução — aponte a contradição.
   scripts `db:generate`/`db:migrate`/`db:studio`.
 - **Cache**: Cache Components (PPR) — nada é cacheado sem `'use cache'`; sem
   `force-dynamic`. Padrão detalhado na skill `nextjs`.
+- **Arquivos**: Vercel Blob (`@vercel/blob`, auth por OIDC — `BLOB_STORE_ID` +
+  `VERCEL_OIDC_TOKEN`, sem token estático no código) com `sharp` processando toda imagem
+  antes do upload — webp q75 em duas variantes 4:3 (`card` 640×480, `full` 1600×1200,
+  ambas 2× o tamanho de exibição), definidas em `domain/animal/photo.ts`. Tabela
+  `animal_photos` criada (`alt` obrigatório, `is_cover` com índice único parcial por
+  animal, `position` para ordenação); o fluxo de upload em si ainda não existe.
 - **Testes**: Vitest (`*.test.ts`, domínio) e Playwright (`e2e/*.spec.ts`, smoke read-only
   na base de dev) — runners separados que não se cruzam.
 - **Lint**: ESLint 9 mecaniza as convenções (`perfectionist`, `unicorn/filename-case`,

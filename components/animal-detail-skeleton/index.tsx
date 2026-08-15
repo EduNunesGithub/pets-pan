@@ -16,6 +16,12 @@ export function AnimalDetailSkeleton() {
         <Skeleton className="h-8 w-48 rounded-md" />
       </div>
 
+      <div className="grid grid-cols-2 gap-item sm:grid-cols-3">
+        {Array.from({ length: 3 }, (_, index) => (
+          <Skeleton className="aspect-4/3 rounded-md" key={index} />
+        ))}
+      </div>
+
       {groups.map((group) => (
         <section
           className="flex flex-col gap-item rounded-md border border-line bg-card px-block py-item"

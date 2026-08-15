@@ -1,8 +1,14 @@
+import Image from "next/image";
+import Link from "next/link";
 import { notFound } from "next/navigation";
 import { twMerge } from "tailwind-merge";
 
-import { getOrganizationAnimal } from "@/app/(workspace)/animals/queries";
+import {
+  getOrganizationAnimal,
+  getOrganizationAnimalPhotos,
+} from "@/app/(workspace)/animals/queries";
 import { AnimalVisibilityBadge } from "@/components/animal-visibility-badge";
+import { Button } from "@/components/button";
 import {
   ageGroupOptions,
   optionLabel,
@@ -48,11 +54,19 @@ export async function AnimalDetail({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  const animal = await getOrganizationAnimal(id);
+
+  const [animal, photos] = await Promise.all([
+    getOrganizationAnimal(id),
+    getOrganizationAnimalPhotos(id),
+  ]);
 
   if (!animal) {
     notFound();
   }
+
+  const sortedPhotos = [...photos].sort(
+    (a, b) => Number(b.isCover) - Number(a.isCover),
+  );
 
   const groups: DetailGroup[] = [
     {
@@ -120,8 +134,41 @@ export async function AnimalDetail({
           )}
 
           <AnimalVisibilityBadge published={animal.published} />
+
+          <Button
+            className="ml-auto"
+            nativeButton={false}
+            render={<Link href={`/animals/${animal.id}/edit`} />}
+          >
+            Editar
+          </Button>
         </div>
       </header>
+
+      {sortedPhotos.length > 0 ? (
+        <ul className="grid grid-cols-2 gap-item sm:grid-cols-3">
+          {sortedPhotos.map((photo) => (
+            <li
+              className="relative aspect-4/3 overflow-hidden rounded-md border border-line"
+              key={photo.id}
+            >
+              <Image
+                alt={photo.alt}
+                className="object-cover"
+                fill
+                sizes="(min-width: 640px) 33vw, 50vw"
+                src={photo.cardUrl}
+              />
+
+              {photo.isCover ? (
+                <span className="eyebrow absolute top-pair left-pair rounded-sm bg-ink/70 px-pair py-0.5 text-card">
+                  Capa
+                </span>
+              ) : null}
+            </li>
+          ))}
+        </ul>
+      ) : null}
 
       {groups.map((group) => (
         <section
